@@ -407,10 +407,10 @@ def google_login():
     if not google.authorized:
         return redirect(url_for("google.login"))
 
-    resp = google.get("/oauth2/v2/userinfo")
+    resp = google.get("/oauth2/v3/userinfo")
     info = resp.json()
 
-    google_id = info.get("id")
+    google_id = info.get("sub")
     email = info.get("email")
     name = info.get("name")
 
