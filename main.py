@@ -33,10 +33,6 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document
 from langgraph.graph import StateGraph, END
 
-from ragas import evaluate, EvaluationDataset
-from ragas.metrics import LLMContextRecall, ContextPrecision, Faithfulness, FactualCorrectness
-from ragas.llms import LangchainLLMWrapper
-
 
 # ===================== CONFIG =====================
 
@@ -136,48 +132,12 @@ def get_llm(provider: str, model_name: str):
         raise ValueError("Invalid provider")
 
 
-def evaluate_response(question, context, answer, llm):
-    try:
-        dataset = [
-            {
-                "user_input": question,
-                "retrieved_contexts": [context],
-                "response": answer,
-                "reference": context  # approximation
-            }
-        ]
-
-        eval_dataset = EvaluationDataset.from_list(dataset)
-        evaluator_llm = LangchainLLMWrapper(llm)
-
-        results = evaluate(
-            dataset=eval_dataset,
-            metrics=[
-                LLMContextRecall(),
-                ContextPrecision(),
-                Faithfulness(),
-                FactualCorrectness()
-            ],
-            llm=evaluator_llm
-        )
-
-        return results
-
-    except Exception as e:
-        print("Evaluation error:", e)
-        return None
-
-
 # ===================== EMBEDDINGS =====================
 
-try:
-    embeddings = BedrockEmbeddings(
-        model_id=EMBED_MODEL,
-        region_name=AWS_REGION
-    )
-except Exception as e:
-    print(f"⚠️  Bedrock embeddings initialization failed: {e}")
-    embeddings = None
+embeddings = BedrockEmbeddings(
+    model_id=EMBED_MODEL,
+    region_name=AWS_REGION
+)
 
 
 # ===================== PROMPTS =====================
@@ -359,10 +319,10 @@ def fact_node(state: RAGState):
     if not state["context"].strip():
         try:
             response = state["llm"].invoke(state["question"]).content.strip()
-            return {"answer": response, "context": state["context"]}
+            return {"answer": response}
         except Exception as e:
             print("FACT NODE ERROR:", e)
-            return {"answer": "Model temporarily unavailable.", "context": state["context"]}
+            return {"answer": "Model temporarily unavailable."}
 
     q_lower = state["question"].lower()
 
@@ -378,10 +338,7 @@ def fact_node(state: RAGState):
         )
     ).content.strip()
 
-    return {
-        "answer": response,
-        "context": state["context"]
-    }
+    return {"answer": response}
 
 
 graph = StateGraph(RAGState)
@@ -526,35 +483,17 @@ def query():
                 "question": q,
                 "llm": llm_instance
             })
-
             answer = result["answer"]
-            context = result.get("context", "")
-
-            # ===================== EVALUATION =====================
-            eval_results = evaluate_response(q, context, answer, llm_instance)
-
-            if eval_results:
-                try:
-                    scores = eval_results.to_dict()
-                except:
-                    scores = str(eval_results)
-            else:
-                scores = None
 
         except Exception as e:
             print("RAG ERROR:", e)
 
-
             # 🔁 fallback direct LLM
             try:
                 answer = llm_instance.invoke(original_q).content.strip()
-                context = ""
-                scores = None
             except Exception as e2:
                 print("LLM ERROR:", e2)
                 answer = "Model temporarily unavailable."
-                context = ""
-                scores = None
 
     # store ALWAYS the latest clean question
     session["last_question"] = original_q
@@ -568,10 +507,7 @@ def query():
 
     db.session.commit()
 
-    return jsonify({
-        "answer": answer,
-        "evaluation": scores
-    })
+    return jsonify({"answer": answer})
 
 
 # ===================== INIT =====================
@@ -587,7 +523,6 @@ if __name__ == "__main__":
 
         print("✅ Chat history cleared on server restart.")
 
-    port = int(os.getenv("PORT", 8000))
-    print(f"Server running at http://0.0.0.0:{port}")
+    print("Server running at http://127.0.0.1:8000")
 
-    app.run(host="0.0.0.0", port=port, debug=False)
+    app.run(port=8000, debug=True)
