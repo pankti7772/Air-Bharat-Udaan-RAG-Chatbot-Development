@@ -355,10 +355,10 @@ def fact_node(state: RAGState):
     if not state["context"].strip():
         try:
             response = state["llm"].invoke(state["question"]).content.strip()
-            return {"answer": response}
+            return {"answer": response, "context": state["context"]}
         except Exception as e:
             print("FACT NODE ERROR:", e)
-            return {"answer": "Model temporarily unavailable."}
+            return {"answer": "Model temporarily unavailable.", "context": state["context"]}
 
     q_lower = state["question"].lower()
 
@@ -374,7 +374,10 @@ def fact_node(state: RAGState):
         )
     ).content.strip()
 
-    return {"answer": response}
+    return {
+        "answer": response,
+        "context": state["context"]
+    }
 
 
 graph = StateGraph(RAGState)
