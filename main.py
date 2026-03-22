@@ -33,6 +33,10 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document
 from langgraph.graph import StateGraph, END
 
+from ragas import evaluate, EvaluationDataset
+from ragas.metrics import LLMContextRecall, ContextPrecision, Faithfulness, FactualCorrectness
+from ragas.llms import LangchainLLMWrapper
+
 
 # ===================== CONFIG =====================
 
@@ -130,6 +134,38 @@ def get_llm(provider: str, model_name: str):
 
     else:
         raise ValueError("Invalid provider")
+
+
+def evaluate_response(question, context, answer, llm):
+    try:
+        dataset = [
+            {
+                "user_input": question,
+                "retrieved_contexts": [context],
+                "response": answer,
+                "reference": context  # approximation
+            }
+        ]
+
+        eval_dataset = EvaluationDataset.from_list(dataset)
+        evaluator_llm = LangchainLLMWrapper(llm)
+
+        results = evaluate(
+            dataset=eval_dataset,
+            metrics=[
+                LLMContextRecall(),
+                ContextPrecision(),
+                Faithfulness(),
+                FactualCorrectness()
+            ],
+            llm=evaluator_llm
+        )
+
+        return results
+
+    except Exception as e:
+        print("Evaluation error:", e)
+        return None
 
 
 # ===================== EMBEDDINGS =====================
@@ -319,10 +355,10 @@ def fact_node(state: RAGState):
     if not state["context"].strip():
         try:
             response = state["llm"].invoke(state["question"]).content.strip()
-            return {"answer": response}
+            return {"answer": response, "context": state["context"]}
         except Exception as e:
             print("FACT NODE ERROR:", e)
-            return {"answer": "Model temporarily unavailable."}
+            return {"answer": "Model temporarily unavailable.", "context": state["context"]}
 
     q_lower = state["question"].lower()
 
@@ -338,7 +374,10 @@ def fact_node(state: RAGState):
         )
     ).content.strip()
 
-    return {"answer": response}
+    return {
+        "answer": response,
+        "context": state["context"]
+    }
 
 
 graph = StateGraph(RAGState)
