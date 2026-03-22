@@ -134,10 +134,14 @@ def get_llm(provider: str, model_name: str):
 
 # ===================== EMBEDDINGS =====================
 
-embeddings = BedrockEmbeddings(
-    model_id=EMBED_MODEL,
-    region_name=AWS_REGION
-)
+try:
+    embeddings = BedrockEmbeddings(
+        model_id=EMBED_MODEL,
+        region_name=AWS_REGION
+    )
+except Exception as e:
+    print(f"⚠️  Bedrock embeddings initialization failed: {e}")
+    embeddings = None
 
 
 # ===================== PROMPTS =====================
@@ -239,12 +243,16 @@ def build_or_load_vectorstore():
     return store
 
 
-vectorstore = build_or_load_vectorstore()
-
-retriever = vectorstore.as_retriever(
-    search_type="similarity",
-    search_kwargs={"k": 20}
-) if vectorstore else None
+try:
+    vectorstore = build_or_load_vectorstore()
+    retriever = vectorstore.as_retriever(
+        search_type="similarity",
+        search_kwargs={"k": 20}
+    ) if vectorstore else None
+except Exception as e:
+    print(f"⚠️  Vector store initialization failed: {e}")
+    vectorstore = None
+    retriever = None
 
 
 # ===================== RAG =====================
