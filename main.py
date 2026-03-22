@@ -170,10 +170,14 @@ def evaluate_response(question, context, answer, llm):
 
 # ===================== EMBEDDINGS =====================
 
-embeddings = BedrockEmbeddings(
-    model_id=EMBED_MODEL,
-    region_name=AWS_REGION
-)
+try:
+    embeddings = BedrockEmbeddings(
+        model_id=EMBED_MODEL,
+        region_name=AWS_REGION
+    )
+except Exception as e:
+    print(f"⚠️  Bedrock embeddings initialization failed: {e}")
+    embeddings = None
 
 
 # ===================== PROMPTS =====================
@@ -540,6 +544,7 @@ def query():
         except Exception as e:
             print("RAG ERROR:", e)
 
+
             # 🔁 fallback direct LLM
             try:
                 answer = llm_instance.invoke(original_q).content.strip()
@@ -582,6 +587,7 @@ if __name__ == "__main__":
 
         print("✅ Chat history cleared on server restart.")
 
-    print("Server running at http://127.0.0.1:8000")
+    port = int(os.getenv("PORT", 8000))
+    print(f"Server running at http://0.0.0.0:{port}")
 
-    app.run(port=8000, debug=True)
+    app.run(host="0.0.0.0", port=port, debug=False)
