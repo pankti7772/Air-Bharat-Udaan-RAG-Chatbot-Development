@@ -371,7 +371,7 @@ def google_login():
         if not google.authorized:
             return redirect(url_for("google.login"))
 
-        resp = google.get("userinfo")  
+        resp = google.get("https://www.googleapis.com/oauth2/v2/userinfo")  
 
         if not resp.ok:
             return f"Failed to fetch user info: {resp.text}"
