@@ -407,33 +407,49 @@ def google_login():
     if not google.authorized:
         return redirect(url_for("google.login"))
 
-    resp = google.get("/oauth2/v3/userinfo")
-    info = resp.json()
+    try:
+        resp = google.get("/oauth2/v3/userinfo")
 
-    google_id = info.get("sub")
-    email = info.get("email")
-    name = info.get("name")
+        # DEBUG
+        print("STATUS:", resp.status_code)
+        print("DATA:", resp.text)
 
-    if not google_id:
-        return "Login failed", 400
+        if resp.status_code != 200:
+            return "Failed to fetch user info", 400
 
-    user = User.query.filter_by(google_id=google_id).first()
+        info = resp.json()
 
-    if not user:
-        user = User(google_id=google_id, email=email, name=name)
-        db.session.add(user)
+        google_id = info.get("sub")   # IMPORTANT
+        email = info.get("email")
+        name = info.get("name")
+
+        if not google_id:
+            return "Login failed: no user id", 400
+
+        user = User.query.filter_by(google_id=google_id).first()
+
+        if not user:
+            user = User(
+                google_id=google_id,
+                email=email,
+                name=name
+            )
+            db.session.add(user)
+            db.session.commit()
+
+        login_user(user)
+
+        db.session.add(LoginHistory(
+            user_id=user.id,
+            ip_address=request.remote_addr
+        ))
         db.session.commit()
 
-    login_user(user)
+        return redirect("/")
 
-    db.session.add(LoginHistory(
-        user_id=user.id,
-        ip_address=request.remote_addr
-    ))
-
-    db.session.commit()
-
-    return redirect("/")
+    except Exception as e:
+        print("GOOGLE LOGIN ERROR:", e)
+        return f"Login error: {str(e)}", 500
 
 
 @app.route("/logout")
