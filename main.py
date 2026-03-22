@@ -4,6 +4,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import os
+import logging
+
+# Enable detailed logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 os.environ["OAUTHLIB_RELAX_TOKEN_SCOPE"] = "1"
@@ -366,8 +371,12 @@ rag_graph = graph.compile()
 
 @app.route("/")
 def home():
-    user_name = current_user.name if current_user.is_authenticated else None
-    return render_template("index.html", logged_in=current_user.is_authenticated, user_name=user_name)
+    try:
+        user_name = current_user.name if current_user.is_authenticated else None
+        return render_template("index.html", logged_in=current_user.is_authenticated, user_name=user_name)
+    except Exception as e:
+        logger.error(f"Home route error: {e}", exc_info=True)
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route("/google_login")
@@ -427,14 +436,17 @@ def history():
         for c in chats
     ])
 
+    try:
+        data = request.json
 
-@app.route("/api/query", methods=["POST"])
-@login_required
-def query():
+        original_q = re.sub(r"\s+", " ", data.get("question", "")).strip()
+        q = original_q
 
-    data = request.json
-
-    original_q = re.sub(r"\s+", " ", data.get("question", "")).strip()
+        if not q:
+            return jsonify({"answer": "Please ask a valid question."})
+    except Exception as e:
+        logger.error(f"Query parsing error: {e}", exc_info=True)
+        return jsonify({"answer": f"Error: {str(e)}"}), 500ip()
     q = original_q
 
     if not q:
@@ -473,32 +485,43 @@ def query():
             for i, c in enumerate(chats)
         )
 
-        return jsonify({"answer": question_list})
-
-    if q_lower in ["hi", "hello", "hey"]:
-
-        answer = "Hello! 😊 How can I assist you today?"
-
-    else:
-
-        provider = data.get("provider", "groq")
-        model_name = data.get("model_name", "llama-3.1-8b-instant")
-
-        llm_instance = get_llm(provider, model_name)
-
         try:
-            result = rag_graph.invoke({
-                "question": q,
-                "llm": llm_instance
-            })
-            answer = result["answer"]
+            provider = data.get("provider", "groq")
+            model_name = data.get("model_name", "llama-3.1-8b-instant")
 
-        except Exception as e:
-            print("RAG ERROR:", e)
+            logger.info(f"Using provider: {provider}, model: {model_name}")
+            llm_instance = get_llm(provider, model_name)
 
-            # 🔁 fallback direct LLM
             try:
-                answer = llm_instance.invoke(original_q).content.strip()
+                if retriever and rag_graph:
+                    result = rag_graph.invoke({
+                        "question": q,
+                        "llm": llm_instance
+                    })
+                    answer = result["answer"]
+                else:
+                    logger.warning("Retriever or RAG graph not available, using direct LLM")
+                    answer = llm_instance.invoke(original_q).content.strip()
+
+            except Exception as e:
+                logger.error(f"RAG ERROR: {e}", exc_info=True)
+
+                # 🔁 fallback direct LLM
+                try:
+                    answer = llm_instance.invoke(original_q).content.strip()
+    try:
+        session["last_question"] = original_q
+        session["last_answer"] = answer
+
+        db.session.add(Chat(
+            user_id=current_user.id,
+            question=original_q,
+            answer=answer
+        ))
+
+        db.session.commit()
+    except Exception as e:
+        logger.error(f"Database save error: {e}", exc_info=True = llm_instance.invoke(original_q).content.strip()
             except Exception as e2:
                 print("LLM ERROR:", e2)
                 answer = "Model temporarily unavailable."
@@ -509,16 +532,28 @@ def query():
 
     db.session.add(Chat(
         user_id=current_user.id,
-        question=original_q,
-        answer=answer
-    ))
+@app.errorhandler(500)
+def handle_500(error):
+    logger.error(f"500 Error: {error}", exc_info=True)
+    return jsonify({"error": "Internal Server Error", "details": str(error)}), 500
 
-    db.session.commit()
+@app.errorhandler(Exception)
+def handle_general_error(error):
+    logger.error(f"Unhandled error: {error}", exc_info=True)
+    return jsonify({"error": "Internal Server Error", "details": str(error)}), 500
 
-    return jsonify({"answer": answer})
+if __name__ == "__main__":
 
+    with app.app_context():
+        try:
+            db.create_all()
 
-# ===================== INIT =====================
+            Chat.query.delete()
+            db.session.commit()
+
+            print("✅ Chat history cleared on server restart.")
+        except Exception as e:
+            logger.error(f"Database initialization error: {e}", exc_info=True
 
 if __name__ == "__main__":
 
