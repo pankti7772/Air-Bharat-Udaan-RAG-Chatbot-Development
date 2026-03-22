@@ -228,24 +228,34 @@ def load_documents():
 
 def build_or_load_vectorstore():
 
-    if os.path.exists(FAISS_PATH):
+    if embeddings is None:
+        logger.warning("Embeddings not available, skipping vectorstore load")
+        return None
 
-        return FAISS.load_local(
-            FAISS_PATH,
-            embeddings,
-            allow_dangerous_deserialization=True
-        )
+    if os.path.exists(FAISS_PATH):
+        try:
+            return FAISS.load_local(
+                FAISS_PATH,
+                embeddings,
+                allow_dangerous_deserialization=True
+            )
+        except Exception as e:
+            logger.warning(f"Failed to load FAISS index: {e}")
+            return None
 
     docs = load_documents()
 
     if not docs:
+        logger.warning("No documents loaded, skipping vectorstore creation")
         return None
 
-    store = FAISS.from_documents(docs, embeddings)
-
-    store.save_local(FAISS_PATH)
-
-    return store
+    try:
+        store = FAISS.from_documents(docs, embeddings)
+        store.save_local(FAISS_PATH)
+        return store
+    except Exception as e:
+        logger.warning(f"Failed to create FAISS store: {e}")
+        return None
 
 
 try:
@@ -381,7 +391,8 @@ def home():
         return render_template("index.html", logged_in=current_user.is_authenticated, user_name=user_name)
     except Exception as e:
         logger.error(f"Home route error: {e}", exc_info=True)
-        return jsonify({"error": str(e)}), 500
+        # Fallback if template not found
+        return jsonify({"error": "Template not found", "status": "ok"}), 500
 
 
 @app.route("/google_login")
@@ -556,7 +567,7 @@ if __name__ == "__main__":
             db.create_all()
             Chat.query.delete()
             db.session.commit()
-            print("✅ Chat history cleared on server restart.")
+            logger.info("✅ Chat history cleared on server restart.")
         except Exception as e:
             logger.error(f"Database initialization error: {e}", exc_info=True)
 
@@ -564,4 +575,12 @@ if __name__ == "__main__":
     debug_mode = os.getenv("FLASK_ENV") == "development"
     
     logger.info(f"Starting Flask app on port {port}, debug={debug_mode}")
-    app.run(host="0.0.0.0", port=port, debug=debug_mode)
+    logger.info(f"Database URI: {app.config['SQLALCHEMY_DATABASE_URI']}")
+    logger.info(f"Template folder: {app.template_folder}")
+    logger.info(f"Static folder: {app.static_folder}")
+    
+    try:
+        app.run(host="0.0.0.0", port=port, debug=debug_mode)
+    except Exception as e:
+        logger.error(f"Fatal error: {e}", exc_info=True)
+        raise
