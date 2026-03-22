@@ -62,6 +62,8 @@ db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = "google.login"
 
+with app.app_context():
+    db.create_all()
 
 # ===================== UNAUTHORIZED =====================
 
@@ -522,18 +524,6 @@ def query():
 
 
 # ===================== INIT =====================
-
 if __name__ == "__main__":
-
-    with app.app_context():
-
-        db.create_all()
-
-        Chat.query.delete()
-        db.session.commit()
-
-        print("✅ Chat history cleared on server restart.")
-
     print("Server running at http://127.0.0.1:8000")
-
     app.run(port=8000, debug=True)
