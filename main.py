@@ -139,10 +139,14 @@ def get_llm(provider: str, model_name: str):
 
 # ===================== EMBEDDINGS =====================
 
-embeddings = BedrockEmbeddings(
-    model_id=EMBED_MODEL,
-    region_name=AWS_REGION
-)
+try:
+    embeddings = BedrockEmbeddings(
+        model_id=EMBED_MODEL,
+        region_name=AWS_REGION
+    )
+except Exception as e:
+    print("Embedding init failed:", e)
+    embeddings = None
 
 
 # ===================== PROMPTS =====================
@@ -244,7 +248,11 @@ def build_or_load_vectorstore():
     return store
 
 
-vectorstore = build_or_load_vectorstore()
+try:
+    vectorstore = build_or_load_vectorstore()
+except Exception as e:
+    print("Vectorstore error:", e)
+    vectorstore = None
 
 retriever = vectorstore.as_retriever(
     search_type="similarity",
