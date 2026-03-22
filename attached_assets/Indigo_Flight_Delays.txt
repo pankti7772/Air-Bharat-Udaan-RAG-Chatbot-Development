@@ -1,0 +1,54 @@
+IndiGo domestic flight delay data.
+
+The IndiGo flight 6E-2014 from DEL to BOM was delayed by 5 minutes.
+The IndiGo flight 6E-5321 from MAA to BOM was delayed by 53 minutes.
+The IndiGo flight 6E-6612 from BLR to DEL was delayed by 56 minutes. 
+The IndiGo flight 6E-889 from COK to ATQ was delayed by 27 minutes. 
+The IndiGo flight 6E-122 from HYD to ATQ was delayed by 8 minutes. 
+The IndiGo flight 6E-445 from DEL to COK was delayed by 46 minutes. 
+The IndiGo flight 6E-771 from BOM to COK was delayed by 9 minutes. 
+The IndiGo flight 6E-902 from COK to DEL was delayed by 48 minutes. 
+The IndiGo flight 6E-334 from HYD to ATQ was delayed by 17 minutes. 
+The IndiGo flight 6E-551 from DEL to BOM was delayed by 19 minutes. 
+The IndiGo flight 6E-108 from COK to ATQ was delayed by 10 minutes. 
+The IndiGo flight 6E-229 from BLR to DEL was delayed by 48 minutes. 
+The IndiGo flight 6E-617 from MAA to BOM was delayed by 46 minutes. 
+The IndiGo flight 6E-882 from BOM to COK was delayed by 55 minutes. 
+The IndiGo flight 6E-404 from DEL to BOM was delayed by 45 minutes. 
+The IndiGo flight 6E-712 from COK to ATQ was delayed by 38 minutes. 
+The IndiGo flight 6E-993 from DEL to COK was delayed by 42 minutes. 
+The IndiGo flight 6E-505 from COK to DEL was delayed by 31 minutes. 
+The IndiGo flight 6E-112 from BOM to COK was delayed by 28 minutes. 
+The IndiGo flight 6E-204 from BOM to COK was delayed by 55 minutes. 
+The IndiGo flight 6E-881 from CCU to IXB was delayed by 22 minutes.
+The IndiGo flight 6E-431 from BLR to MAA was delayed by 13 minutes.
+The IndiGo flight 6E-909 from DEL to RPR was delayed by 37 minutes.
+The IndiGo flight 6E-221 from HYD to VTZ was delayed by 51 minutes.
+The IndiGo flight 6E-774 from BOM to NAG was delayed by 16 minutes.The IndiGo flight 6E-315 from CCU to PAT was delayed by 29 minutes.
+The IndiGo flight 6E-102 from DEL to DED was delayed by 40 minutes.
+The IndiGo flight 6E-662 from MAA to HYD was delayed by 4 minutes.
+The IndiGo flight 6E-449 from BLR to TRV was delayed by 35 minutes.
+The IndiGo flight 6E-808 from BOM to GOI was delayed by 26 minutes.
+
+
+International Flight Delays:
+The IndiGo flight from DEL to DXB was delayed by 67 minutes.
+The IndiGo flight from BOM to DXB was delayed by 112 minutes.
+The IndiGo flight from BLR to SIN was delayed by 54 minutes.
+The IndiGo flight from HYD to DOH was delayed by 129 minutes.
+The IndiGo flight from MAA to BKK was delayed by 38 minutes.
+The IndiGo flight from DEL to SIN was delayed by 145 minutes.
+The IndiGo flight from BOM to IST was delayed by 73 minutes.
+The IndiGo flight from BLR to KUL was delayed by 26 minutes.
+The IndiGo flight from HYD to DXB was delayed by 91 minutes.
+The IndiGo flight from DEL to BKK was delayed by 159 minutes.
+The IndiGo flight from BOM to SIN was delayed by 47 minutes.
+The IndiGo flight from BLR to DOH was delayed by 120 minutes.
+The IndiGo flight from MAA to DXB was delayed by 84 minutes.
+The IndiGo flight from DEL to KUL was delayed by 33 minutes.
+The IndiGo flight from HYD to SIN was delayed by 176 minutes.
+The IndiGo flight from BOM to BKK was delayed by 62 minutes.
+The IndiGo flight from BLR to DXB was delayed by 98 minutes.
+The IndiGo flight from DEL to IST was delayed by 51 minutes.
+The IndiGo flight from MAA to SIN was delayed by 137 minutes.
+The IndiGo flight from HYD to BKK was delayed by 75 minutes.

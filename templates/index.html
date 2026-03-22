@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UDAN RAG Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        /* ================= GLOBAL ================= */
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        /* ================= LIGHT MODE ================= */
+        body {
+            background-image: url("/static/bg-light.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.35);
+            z-index: -1;
+        }
+
+        /* ================= DARK MODE ================= */
+        .dark-mode {
+            background-image: url("/static/bg-dark.jpg") !important;
+        }
+
+        .dark-mode::before {
+            background: rgba(5,15,35,0.75);
+        }
+
+        /* ================= SCROLLBAR ================= */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.1);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(100,100,100,0.5);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(100,100,100,0.7);
+        }
+
+        /* ================= HEADER ================= */
+        header {
+            transition: 0.3s ease;
+        }
+
+        .dark-mode header {
+            background: rgba(15,23,42,0.95) !important;
+        }
+
+        .dark-mode header h1,
+        .dark-mode header span {
+            color: white !important;
+        }
+
+        /* ================= SIDEBAR ================= */
+        .sidebar {
+            transition: transform 0.3s ease;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .dark-mode .sidebar {
+            background: rgba(15,23,42,0.95);
+        }
+
+        .sidebar.closed {
+            transform: translateX(-100%);
+        }
+
+        .history-item {
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .history-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-left-color: #3b82f6;
+        }
+
+        .dark-mode .history-item:hover {
+            background: rgba(59, 130, 246, 0.2);
+        }
+
+        /* ================= DROPDOWN ================= */
+        select {
+            background: white;
+            color: black;
+            border: 1px solid #d1d5db;
+        }
+
+        .dark-mode select {
+            background: #1e293b !important;
+            color: white !important;
+            border: 1px solid #334155 !important;
+        }
+
+        /* ================= CHAT ================= */
+        #chat-container {
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .chat-bubble {
+            max-width: 80%;
+            border-radius: 1.2rem;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1rem;
+            white-space: pre-wrap;
+            animation: fadeIn 0.25s ease-in-out;
+            line-height: 1.6;
+        }
+
+        .user {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 0.3rem;
+        }
+
+        .bot {
+            background: rgba(255,255,255,0.95);
+            color: #1f2937;
+            align-self: flex-start;
+            border-bottom-left-radius: 0.3rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .dark-mode .bot {
+            background: #1e293b;
+            color: #e2e8f0;
+        }
+
+        .dark-mode .user {
+            background: linear-gradient(135deg, #1d4ed8, #1e3a8a);
+        }
+
+        .dark-mode #question-input {
+            background: #1e293b !important;
+            color: white !important;
+            border: 1px solid #334155 !important;
+        }
+
+        .dark-mode #question-input::placeholder {
+            color: #94a3b8;
+        }
+
+        /* ================= ANIMATIONS ================= */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .thinking {
+            animation: pulse 1.5s infinite;
+        }
+
+        /* ================= BUTTONS ================= */
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            color: white;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(100,100,100,0.2);
+            color: #374151;
+            transition: all 0.2s ease;
+        }
+
+        .dark-mode .btn-secondary {
+            color: #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(100,100,100,0.3);
+        }
+
+        /* ================= LOGIN REQUIRED OVERLAY ================= */
+        .login-overlay {
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        /* ================= RESPONSIVE ================= */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                z-index: 50;
+                width: 280px;
+                height: 100vh;
+            }
+
+            .chat-bubble {
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+
+<body class="flex flex-col h-screen overflow-hidden">
+
+    <!-- ================= HEADER ================= -->
+    <header class="bg-white/90 backdrop-blur-md border-b px-4 py-3 flex justify-between items-center shadow-lg z-40">
+
+        <div class="flex items-center gap-3">
+            <!-- Sidebar Toggle -->
+            <button id="sidebar-toggle" class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+                <i class="fas fa-bars text-gray-700 dark:text-white"></i>
+            </button>
+
+            <h1 class="text-xl font-bold text-gray-800">
+                ✈️ UDAN RAG Platform
+            </h1>
+        </div>
+
+        <div class="flex gap-2 items-center flex-wrap justify-end">
+            <!-- Theme Toggle -->
+            <button id="theme-toggle" class="p-2 px-3 rounded-lg bg-gray-800 text-white shadow hover:bg-gray-700 transition">
+                <i class="fas fa-moon" id="theme-icon"></i>
+            </button>
+
+            <!-- Provider Select -->
+            <select id="provider" class="border border-gray-300 p-2 rounded-lg shadow-sm text-sm">
+                <option value="groq">Groq</option>
+                <option value="bedrock">AWS Bedrock</option>
+            </select>
+
+            <!-- Model Select -->
+            <select id="model" class="border border-gray-300 p-2 rounded-lg shadow-sm text-sm"></select>
+
+            <!-- User Info / Login -->
+            <div id="auth-section">
+                {% if logged_in %}
+                    <div class="flex items-center gap-2">
+                        <span class="text-gray-700 text-sm hidden sm:inline">
+                            <i class="fas fa-user-circle mr-1"></i>{{ user_name }}
+                        </span>
+                        <a href="/logout" class="bg-gray-600 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-700 transition text-sm">
+                            <i class="fas fa-sign-out-alt mr-1"></i>Logout
+                        </a>
+                    </div>
+                {% else %}
+                    <a href="/login/google" class="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition text-sm flex items-center gap-2">
+                        <i class="fab fa-google"></i> Login with Google
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <!-- ================= MAIN CONTENT ================= -->
+    <div class="flex flex-1 overflow-hidden">
+
+        <!-- ================= SIDEBAR (History) ================= -->
+        <aside id="sidebar" class="sidebar w-72 border-r flex flex-col h-full">
+
+            <!-- Sidebar Header -->
+            <div class="p-4 border-b flex justify-between items-center">
+                <h2 class="font-semibold text-gray-800 dark:text-white">
+                    <i class="fas fa-history mr-2"></i>Chat History
+                </h2>
+                <button id="refresh-history" class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition" title="Refresh History">
+                    <i class="fas fa-sync-alt text-gray-600 dark:text-gray-300"></i>
+                </button>
+            </div>
+
+            <!-- History List -->
+            <div id="history-container" class="flex-1 overflow-y-auto p-3">
+                <div class="text-center text-gray-500 py-8">
+                    <i class="fas fa-comments text-4xl mb-3 opacity-50"></i>
+                    <p class="text-sm">No history yet</p>
+                    <p class="text-xs mt-1">Start chatting to see history</p>
+                </div>
+            </div>
+
+            <!-- Sidebar Footer -->
+            <div class="p-3 border-t">
+                <button id="clear-chat" class="w-full btn-secondary px-4 py-2 rounded-lg text-sm flex items-center justify-center gap-2">
+                    <i class="fas fa-trash-alt"></i> Clear Current Chat
+                </button>
+            </div>
+        </aside>
+
+        <!-- ================= CHAT AREA ================= -->
+        <main class="flex-1 flex flex-col p-4 md:p-6 overflow-hidden">
+
+            <div class="flex-1 flex flex-col max-w-4xl mx-auto w-full min-h-0">
+
+                <!-- Chat Messages -->
+                <div id="chat-container" class="flex-1 flex flex-col p-4 md:p-6 rounded-2xl bg-white/20 backdrop-blur-xl border border-white/30 shadow-2xl overflow-y-auto">
+
+                    <div class="chat-bubble bot">
+                        <i class="fas fa-robot mr-2"></i>Hello! 😊 I'm your UDAN assistant. Ask me anything about UDAN regional connectivity scheme, airlines, routes, and more!
+                    </div>
+
+                </div>
+
+                <!-- Input Form -->
+                <form id="query-form" class="flex gap-3 mt-4">
+                    <input type="text"
+                           id="question-input"
+                           placeholder="Ask about UDAN, airlines, routes..."
+                           class="flex-1 p-4 rounded-xl bg-white/95 border border-gray-300 outline-none shadow-md focus:ring-2 focus:ring-blue-500 transition"
+                           required
+                           autocomplete="off">
+
+                    <button type="submit" class="btn-primary px-6 py-3 rounded-xl shadow-lg flex items-center gap-2">
+                        <i class="fas fa-paper-plane"></i>
+                        <span class="hidden sm:inline">Send</span>
+                    </button>
+                </form>
+
+                <!-- Quick Info -->
+                <div class="mt-3 text-center text-sm text-white/70">
+                    <span id="status-text">Ready to chat</span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ================= LOGIN REQUIRED OVERLAY ================= -->
+    {% if not logged_in %}
+    <div id="login-overlay" class="login-overlay fixed inset-0 z-50 flex items-center justify-center hidden">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-8 max-w-md mx-4 text-center shadow-2xl">
+            <i class="fas fa-lock text-5xl text-blue-500 mb-4"></i>
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">Login Required</h2>
+            <p class="text-gray-600 dark:text-gray-300 mb-6">Please login with your Google account to use the chat feature.</p>
+            <a href="/login/google" class="bg-red-500 text-white px-6 py-3 rounded-xl shadow-lg hover:bg-red-600 transition inline-flex items-center gap-2">
+                <i class="fab fa-google"></i> Login with Google
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- ================= JAVASCRIPT ================= -->
+    <script>
+        // ================= DOM ELEMENTS =================
+        const providerSelect = document.getElementById("provider");
+        const modelSelect = document.getElementById("model");
+        const form = document.getElementById("query-form");
+        const container = document.getElementById("chat-container");
+        const input = document.getElementById("question-input");
+        const toggleBtn = document.getElementById("theme-toggle");
+        const themeIcon = document.getElementById("theme-icon");
+        const sidebar = document.getElementById("sidebar");
+        const sidebarToggle = document.getElementById("sidebar-toggle");
+        const historyContainer = document.getElementById("history-container");
+        const refreshHistoryBtn = document.getElementById("refresh-history");
+        const clearChatBtn = document.getElementById("clear-chat");
+        const statusText = document.getElementById("status-text");
+        const loginOverlay = document.getElementById("login-overlay");
+
+        const isLoggedIn = {{ 'true' if logged_in else 'false' }};
+
+        // ================= MODEL SELECTION =================
+        function loadModels() {
+            const provider = providerSelect.value;
+            modelSelect.innerHTML = "";
+
+            if (provider === "groq") {
+                modelSelect.innerHTML = `
+                    <option value="llama-3.1-8b-instant">Llama 3.1 8B (Fast)</option>
+                    <option value="llama-3.3-70b-versatile">Llama 3.3 70B</option>
+                    <option value="meta-llama/llama-4-scout-17b-16e-instruct">Llama 4 Scout 17B</option>
+                    <option value="openai/gpt-oss-120b">GPT OSS 120B</option>
+                `;
+            } else if (provider === "bedrock") {
+                modelSelect.innerHTML = `
+                    <option value="meta.llama3-3-70b-instruct-v1:0">Bedrock Llama 3 70B</option>
+                `;
+            }
+        }
+
+        providerSelect.addEventListener("change", loadModels);
+        loadModels();
+
+        // ================= CHAT FUNCTIONS =================
+        function appendMessage(role, content, animate = true) {
+            const div = document.createElement("div");
+            div.className = `chat-bubble ${role}`;
+
+            if (role === "bot") {
+                div.innerHTML = `<i class="fas fa-robot mr-2"></i>${escapeHtml(content)}`;
+            } else {
+                div.innerHTML = `${escapeHtml(content)}<i class="fas fa-user ml-2"></i>`;
+            }
+
+            if (!animate) {
+                div.style.animation = "none";
+            }
+
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement("div");
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function setStatus(text) {
+            statusText.textContent = text;
+        }
+
+        // ================= FORM SUBMISSION (POST /api/query) =================
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+
+            if (!isLoggedIn) {
+                if (loginOverlay) loginOverlay.classList.remove("hidden");
+                return;
+            }
+
+            const question = input.value.trim();
+            if (!question) return;
+
+            appendMessage("user", question);
+            input.value = "";
+            setStatus("Thinking...");
+
+            // Add loading bubble
+            const loading = document.createElement("div");
+            loading.className = "chat-bubble bot thinking";
+            loading.innerHTML = '<i class="fas fa-robot mr-2"></i>Thinking... 🤔';
+            container.appendChild(loading);
+            container.scrollTop = container.scrollHeight;
+
+            try {
+                const res = await fetch("/api/query", {
+                    method: "POST",
+                    credentials: "include",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        question: question,
+                        provider: providerSelect.value,
+                        model_name: modelSelect.value
+                    })
+                });
+
+                loading.remove();
+
+                if (res.status === 401) {
+                    appendMessage("bot", "🔒 Please login first to use this feature.");
+                    if (loginOverlay) loginOverlay.classList.remove("hidden");
+                    setStatus("Login required");
+                    return;
+                }
+
+                const data = await res.json();
+                appendMessage("bot", data.answer);
+                setStatus("Ready to chat");
+
+                // Refresh history after new message
+                setTimeout(loadHistory, 500);
+
+            } catch (error) {
+                loading.remove();
+                appendMessage("bot", "⚠️ Could not connect to server. Please try again.");
+                setStatus("Connection error");
+            }
+        };
+
+        // ================= LOAD HISTORY (GET /api/history) =================
+        async function loadHistory() {
+            if (!isLoggedIn) {
+                historyContainer.innerHTML = `
+                    <div class="text-center text-gray-500 py-8">
+                        <i class="fas fa-lock text-4xl mb-3 opacity-50"></i>
+                        <p class="text-sm">Login to see history</p>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                const res = await fetch("/api/history", {
+                    method: "GET",
+                    credentials: "include"
+                });
+
+                if (res.status === 401) {
+                    historyContainer.innerHTML = `
+                        <div class="text-center text-gray-500 py-8">
+                            <i class="fas fa-lock text-4xl mb-3 opacity-50"></i>
+                            <p class="text-sm">Login to see history</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const history = await res.json();
+
+                if (history.length === 0) {
+                    historyContainer.innerHTML = `
+                        <div class="text-center text-gray-500 py-8">
+                            <i class="fas fa-comments text-4xl mb-3 opacity-50"></i>
+                            <p class="text-sm">No history yet</p>
+                            <p class="text-xs mt-1">Start chatting to see history</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Group by date
+                const grouped = {};
+                history.forEach(item => {
+                    const date = item.time.split(" ")[0];
+                    if (!grouped[date]) grouped[date] = [];
+                    grouped[date].push(item);
+                });
+
+                let html = "";
+                for (const [date, items] of Object.entries(grouped).reverse()) {
+                    html += `<div class="mb-4">
+                        <div class="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2 px-2">${formatDate(date)}</div>`;
+
+                    items.reverse().forEach(item => {
+                        const shortQuestion = item.question.length > 40
+                            ? item.question.substring(0, 40) + "..."
+                            : item.question;
+                        const time = item.time.split(" ")[1].substring(0, 5);
+
+                        html += `
+                            <div class="history-item p-3 rounded-lg mb-1 cursor-pointer"
+                                 onclick="loadConversation('${escapeJs(item.question)}', '${escapeJs(item.answer)}')">
+                                <div class="text-sm text-gray-800 dark:text-gray-200 font-medium truncate">
+                                    ${escapeHtml(shortQuestion)}
+                                </div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                    <i class="fas fa-clock mr-1"></i>${time}
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    html += `</div>`;
+                }
+
+                historyContainer.innerHTML = html;
+
+            } catch (error) {
+                historyContainer.innerHTML = `
+                    <div class="text-center text-red-500 py-8">
+                        <i class="fas fa-exclamation-circle text-4xl mb-3"></i>
+                        <p class="text-sm">Failed to load history</p>
+                    </div>
+                `;
+            }
+        }
+
+        function escapeJs(str) {
+            return str.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, '\\n');
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+
+            if (dateStr === today.toISOString().split("T")[0]) {
+                return "Today";
+            } else if (dateStr === yesterday.toISOString().split("T")[0]) {
+                return "Yesterday";
+            } else {
+                return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+            }
+        }
+
+        function loadConversation(question, answer) {
+            // Clear current chat and show the selected conversation
+            container.innerHTML = "";
+            appendMessage("user", question, false);
+            appendMessage("bot", answer, false);
+        }
+
+        // ================= CLEAR CHAT =================
+        clearChatBtn.onclick = () => {
+            container.innerHTML = `
+                <div class="chat-bubble bot">
+                    <i class="fas fa-robot mr-2"></i>Chat cleared! How can I help you?
+                </div>
+            `;
+        };
+
+        // ================= SIDEBAR TOGGLE =================
+        sidebarToggle.onclick = () => {
+            sidebar.classList.toggle("closed");
+        };
+
+        // ================= REFRESH HISTORY =================
+        refreshHistoryBtn.onclick = () => {
+            refreshHistoryBtn.querySelector("i").classList.add("fa-spin");
+            loadHistory().then(() => {
+                setTimeout(() => {
+                    refreshHistoryBtn.querySelector("i").classList.remove("fa-spin");
+                }, 500);
+            });
+        };
+
+        // ================= THEME TOGGLE =================
+        function updateThemeIcon() {
+            if (document.body.classList.contains("dark-mode")) {
+                themeIcon.className = "fas fa-sun";
+            } else {
+                themeIcon.className = "fas fa-moon";
+            }
+        }
+
+        toggleBtn.onclick = () => {
+            document.body.classList.toggle("dark-mode");
+            localStorage.setItem("theme", document.body.classList.contains("dark-mode") ? "dark" : "light");
+            updateThemeIcon();
+        };
+
+        // ================= INITIALIZATION =================
+        window.addEventListener("load", () => {
+            // Load theme preference
+            if (localStorage.getItem("theme") === "dark") {
+                document.body.classList.add("dark-mode");
+            }
+            updateThemeIcon();
+
+            // Load chat history
+            loadHistory();
+
+            // Focus input
+            input.focus();
+
+            // Handle mobile sidebar
+            if (window.innerWidth < 768) {
+                sidebar.classList.add("closed");
+            }
+        });
+
+        // Close sidebar on mobile when clicking outside
+        document.addEventListener("click", (e) => {
+            if (window.innerWidth < 768 &&
+                !sidebar.contains(e.target) &&
+                !sidebarToggle.contains(e.target) &&
+                !sidebar.classList.contains("closed")) {
+                sidebar.classList.add("closed");
+            }
+        });
+
+        // Handle resize
+        window.addEventListener("resize", () => {
+            if (window.innerWidth >= 768) {
+                sidebar.classList.remove("closed");
+            }
+        });
+
+        // Keyboard shortcut: Enter to send
+        input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                form.dispatchEvent(new Event("submit"));
+            }
+        });
+    </script>
+
+</body>
+</html>
