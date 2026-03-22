@@ -4,11 +4,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import os
-import logging
-
-# Enable detailed logging
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
 
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 os.environ["OAUTHLIB_RELAX_TOKEN_SCOPE"] = "1"
@@ -38,6 +33,10 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document
 from langgraph.graph import StateGraph, END
 
+from ragas import evaluate, EvaluationDataset
+from ragas.metrics import LLMContextRecall, ContextPrecision, Faithfulness, FactualCorrectness
+from ragas.llms import LangchainLLMWrapper
+
 
 # ===================== CONFIG =====================
 
@@ -56,7 +55,6 @@ app.config["SECRET_KEY"] = "super_secret_key"
 app.config["SESSION_TYPE"] = "filesystem"
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///udan_users.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["PROPAGATE_EXCEPTIONS"] = True
 
 app.config["GOOGLE_OAUTH_CLIENT_ID"] = os.getenv("GOOGLE_CLIENT_ID")
 app.config["GOOGLE_OAUTH_CLIENT_SECRET"] = os.getenv("GOOGLE_CLIENT_SECRET")
@@ -64,8 +62,6 @@ app.config["GOOGLE_OAUTH_CLIENT_SECRET"] = os.getenv("GOOGLE_CLIENT_SECRET")
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = "google.login"
-
-logger.info("✅ Flask app initialized")
 
 
 # ===================== UNAUTHORIZED =====================
@@ -140,16 +136,44 @@ def get_llm(provider: str, model_name: str):
         raise ValueError("Invalid provider")
 
 
+def evaluate_response(question, context, answer, llm):
+    try:
+        dataset = [
+            {
+                "user_input": question,
+                "retrieved_contexts": [context],
+                "response": answer,
+                "reference": context  # approximation
+            }
+        ]
+
+        eval_dataset = EvaluationDataset.from_list(dataset)
+        evaluator_llm = LangchainLLMWrapper(llm)
+
+        results = evaluate(
+            dataset=eval_dataset,
+            metrics=[
+                LLMContextRecall(),
+                ContextPrecision(),
+                Faithfulness(),
+                FactualCorrectness()
+            ],
+            llm=evaluator_llm
+        )
+
+        return results
+
+    except Exception as e:
+        print("Evaluation error:", e)
+        return None
+
+
 # ===================== EMBEDDINGS =====================
 
-try:
-    embeddings = BedrockEmbeddings(
-        model_id=EMBED_MODEL,
-        region_name=AWS_REGION
-    )
-except Exception as e:
-    logger.warning(f"⚠️  Bedrock embeddings initialization failed: {e}")
-    embeddings = None
+embeddings = BedrockEmbeddings(
+    model_id=EMBED_MODEL,
+    region_name=AWS_REGION
+)
 
 
 # ===================== PROMPTS =====================
@@ -231,46 +255,32 @@ def load_documents():
 
 def build_or_load_vectorstore():
 
-    if embeddings is None:
-        logger.warning("Embeddings not available, skipping vectorstore load")
-        return None
-
     if os.path.exists(FAISS_PATH):
-        try:
-            return FAISS.load_local(
-                FAISS_PATH,
-                embeddings,
-                allow_dangerous_deserialization=True
-            )
-        except Exception as e:
-            logger.warning(f"Failed to load FAISS index: {e}")
-            return None
+
+        return FAISS.load_local(
+            FAISS_PATH,
+            embeddings,
+            allow_dangerous_deserialization=True
+        )
 
     docs = load_documents()
 
     if not docs:
-        logger.warning("No documents loaded, skipping vectorstore creation")
         return None
 
-    try:
-        store = FAISS.from_documents(docs, embeddings)
-        store.save_local(FAISS_PATH)
-        return store
-    except Exception as e:
-        logger.warning(f"Failed to create FAISS store: {e}")
-        return None
+    store = FAISS.from_documents(docs, embeddings)
+
+    store.save_local(FAISS_PATH)
+
+    return store
 
 
-try:
-    vectorstore = build_or_load_vectorstore()
-    retriever = vectorstore.as_retriever(
-        search_type="similarity",
-        search_kwargs={"k": 20}
-    ) if vectorstore else None
-except Exception as e:
-    logger.warning(f"⚠️  Vector store initialization failed: {e}")
-    vectorstore = None
-    retriever = None
+vectorstore = build_or_load_vectorstore()
+
+retriever = vectorstore.as_retriever(
+    search_type="similarity",
+    search_kwargs={"k": 20}
+) if vectorstore else None
 
 
 # ===================== RAG =====================
@@ -345,10 +355,10 @@ def fact_node(state: RAGState):
     if not state["context"].strip():
         try:
             response = state["llm"].invoke(state["question"]).content.strip()
-            return {"answer": response}
+            return {"answer": response, "context": state["context"]}
         except Exception as e:
-            logger.error("FACT NODE ERROR:", exc_info=True)
-            return {"answer": "Model temporarily unavailable."}
+            print("FACT NODE ERROR:", e)
+            return {"answer": "Model temporarily unavailable.", "context": state["context"]}
 
     q_lower = state["question"].lower()
 
@@ -364,7 +374,10 @@ def fact_node(state: RAGState):
         )
     ).content.strip()
 
-    return {"answer": response}
+    return {
+        "answer": response,
+        "context": state["context"]
+    }
 
 
 graph = StateGraph(RAGState)
@@ -382,20 +395,10 @@ rag_graph = graph.compile()
 
 # ===================== ROUTES =====================
 
-@app.route("/health")
-def health():
-    return jsonify({"status": "ok"}), 200
-
-
 @app.route("/")
 def home():
-    try:
-        user_name = current_user.name if current_user.is_authenticated else None
-        return render_template("index.html", logged_in=current_user.is_authenticated, user_name=user_name)
-    except Exception as e:
-        logger.error(f"Home route error: {e}", exc_info=True)
-        # Fallback if template not found
-        return jsonify({"error": "Template not found", "status": "ok"}), 500
+    user_name = current_user.name if current_user.is_authenticated else None
+    return render_template("index.html", logged_in=current_user.is_authenticated, user_name=user_name)
 
 
 @app.route("/google_login")
@@ -459,145 +462,126 @@ def history():
 @app.route("/api/query", methods=["POST"])
 @login_required
 def query():
-    try:
-        data = request.json
 
-        original_q = re.sub(r"\s+", " ", data.get("question", "")).strip()
+    data = request.json
+
+    original_q = re.sub(r"\s+", " ", data.get("question", "")).strip()
+    q = original_q
+
+    if not q:
+        return jsonify({"answer": "Please ask a valid question."})
+
+    q_lower = q.lower()
+
+    # ===================== GENERAL MEMORY =====================
+    last_question = session.get("last_question")
+    last_answer = session.get("last_answer")
+
+    follow_words = ["it", "this", "that", "those", "they", "above", "previous"]
+
+    is_followup = False
+
+    # detect follow-up ONLY by keyword when last_question exists
+    if last_question and any(word in q_lower for word in follow_words):
+        is_followup = True
+
+    if is_followup:
+        q = f"Previous Question: {last_question}\nPrevious Answer: {last_answer}\nCurrent Question: {original_q}"
+    else:
         q = original_q
+        last_question = None
+        last_answer = None
 
-        if not q:
-            return jsonify({"answer": "Please ask a valid question."})
+    if "all questions" in q_lower:
 
-        q_lower = q.lower()
+        chats = Chat.query.filter_by(user_id=current_user.id).all()
 
-        # ===================== GENERAL MEMORY =====================
-        last_question = session.get("last_question")
-        last_answer = session.get("last_answer")
+        if not chats:
+            return jsonify({"answer": "No questions asked yet."})
 
-        follow_words = ["it", "this", "that", "those", "they", "above", "previous"]
+        question_list = "\n".join(
+            f"{i+1}. {c.question}"
+            for i, c in enumerate(chats)
+        )
 
-        is_followup = False
+        return jsonify({"answer": question_list})
 
-        # detect follow-up ONLY by keyword when last_question exists
-        if last_question and any(word in q_lower for word in follow_words):
-            is_followup = True
+    if q_lower in ["hi", "hello", "hey"]:
 
-        if is_followup:
-            q = f"Previous Question: {last_question}\nPrevious Answer: {last_answer}\nCurrent Question: {original_q}"
-        else:
-            q = original_q
-            last_question = None
-            last_answer = None
+        answer = "Hello! 😊 How can I assist you today?"
 
-        if "all questions" in q_lower:
-            chats = Chat.query.filter_by(user_id=current_user.id).all()
+    else:
 
-            if not chats:
-                return jsonify({"answer": "No questions asked yet."})
+        provider = data.get("provider", "groq")
+        model_name = data.get("model_name", "llama-3.1-8b-instant")
 
-            question_list = "\n".join(
-                f"{i+1}. {c.question}"
-                for i, c in enumerate(chats)
-            )
+        llm_instance = get_llm(provider, model_name)
 
-            return jsonify({"answer": question_list})
+        try:
+            result = rag_graph.invoke({
+                "question": q,
+                "llm": llm_instance
+            })
 
-        if q_lower in ["hi", "hello", "hey"]:
-            answer = "Hello! 😊 How can I assist you today?"
-        else:
-            provider = data.get("provider", "groq")
-            model_name = data.get("model_name", "llama-3.1-8b-instant")
+            answer = result["answer"]
+            context = result.get("context", "")
 
-            logger.info(f"Using provider: {provider}, model: {model_name}")
-            llm_instance = get_llm(provider, model_name)
+            # ===================== EVALUATION =====================
+            eval_results = evaluate_response(q, context, answer, llm_instance)
 
-            try:
-                if retriever and rag_graph:
-                    result = rag_graph.invoke({
-                        "question": q,
-                        "llm": llm_instance
-                    })
-                    answer = result["answer"]
-                else:
-                    logger.warning("Retriever or RAG graph not available, using direct LLM")
-                    answer = llm_instance.invoke(original_q).content.strip()
-
-            except Exception as e:
-                logger.error(f"RAG ERROR: {e}", exc_info=True)
-
-                # 🔁 fallback direct LLM
+            if eval_results:
                 try:
-                    answer = llm_instance.invoke(original_q).content.strip()
-                except Exception as e2:
-                    logger.error(f"LLM ERROR: {e2}", exc_info=True)
-                    answer = "Model temporarily unavailable."
+                    scores = eval_results.to_dict()
+                except:
+                    scores = str(eval_results)
+            else:
+                scores = None
 
-        # store ALWAYS the latest clean question
-        session["last_question"] = original_q
-        session["last_answer"] = answer
+        except Exception as e:
+            print("RAG ERROR:", e)
 
-        db.session.add(Chat(
-            user_id=current_user.id,
-            question=original_q,
-            answer=answer
-        ))
+            # 🔁 fallback direct LLM
+            try:
+                answer = llm_instance.invoke(original_q).content.strip()
+                context = ""
+                scores = None
+            except Exception as e2:
+                print("LLM ERROR:", e2)
+                answer = "Model temporarily unavailable."
+                context = ""
+                scores = None
 
-        db.session.commit()
+    # store ALWAYS the latest clean question
+    session["last_question"] = original_q
+    session["last_answer"] = answer
 
-        return jsonify({"answer": answer})
+    db.session.add(Chat(
+        user_id=current_user.id,
+        question=original_q,
+        answer=answer
+    ))
 
-    except Exception as e:
-        logger.error(f"Query error: {e}", exc_info=True)
-        return jsonify({"answer": f"Error: {str(e)}"}), 500
+    db.session.commit()
+
+    return jsonify({
+        "answer": answer,
+        "evaluation": scores
+    })
 
 
-@app.errorhandler(500)
-def handle_500(error):
-    logger.error(f"500 Error: {error}", exc_info=True)
-    return jsonify({"error": "Internal Server Error"}), 500
-
-
-@app.errorhandler(Exception)
-def handle_general_error(error):
-    logger.error(f"Unhandled error: {error}", exc_info=True)
-    return jsonify({"error": "Internal Server Error"}), 500
-
+# ===================== INIT =====================
 
 if __name__ == "__main__":
 
     with app.app_context():
-        try:
-            logger.info("Creating database tables...")
-            db.create_all()
-            logger.info("✅ Database tables created")
-            
-            logger.info("Clearing chat history...")
-            Chat.query.delete()
-            db.session.commit()
-            logger.info("✅ Chat history cleared")
-        except Exception as e:
-            logger.error(f"Database initialization error: {e}", exc_info=True)
 
-    port = int(os.getenv("PORT", 8000))
-    is_production = os.getenv("RENDER") == "true"
-    debug_mode = False if is_production else os.getenv("FLASK_ENV") == "development"
-    
-    logger.info(f"Environment: {'PRODUCTION (Render)' if is_production else 'DEV'}")
-    logger.info(f"Starting Flask app on 0.0.0.0:{port}, debug={debug_mode}")
-    logger.info(f"Template folder: {app.template_folder}")
-    logger.info(f"Static folder: {app.static_folder}")
-    
-    try:
-        app.run(host="0.0.0.0", port=port, debug=debug_mode, use_reloader=False)
-    except Exception as e:
-        logger.error(f"Fatal error: {e}", exc_info=True)
-        raise
+        db.create_all()
 
-else:
-    # For gunicorn production use
-    logger.info("App loaded by gunicorn")
-    with app.app_context():
-        try:
-            db.create_all()
-        except Exception as e:
-            logger.warning(f"Could not initialize database at import time: {e}")
+        Chat.query.delete()
+        db.session.commit()
+
+        print("✅ Chat history cleared on server restart.")
+
+    print("Server running at http://127.0.0.1:8000")
+
+    app.run(port=8000, debug=True)
