@@ -145,7 +145,7 @@ try:
         region_name=AWS_REGION
     )
 except Exception as e:
-    print(f"⚠️  Bedrock embeddings initialization failed: {e}")
+    logger.warning(f"⚠️  Bedrock embeddings initialization failed: {e}")
     embeddings = None
 
 
@@ -255,7 +255,7 @@ try:
         search_kwargs={"k": 20}
     ) if vectorstore else None
 except Exception as e:
-    print(f"⚠️  Vector store initialization failed: {e}")
+    logger.warning(f"⚠️  Vector store initialization failed: {e}")
     vectorstore = None
     retriever = None
 
@@ -334,7 +334,7 @@ def fact_node(state: RAGState):
             response = state["llm"].invoke(state["question"]).content.strip()
             return {"answer": response}
         except Exception as e:
-            print("FACT NODE ERROR:", e)
+            logger.error("FACT NODE ERROR:", exc_info=True)
             return {"answer": "Model temporarily unavailable."}
 
     q_lower = state["question"].lower()
@@ -368,6 +368,11 @@ rag_graph = graph.compile()
 
 
 # ===================== ROUTES =====================
+
+@app.route("/health")
+def health():
+    return jsonify({"status": "ok"}), 200
+
 
 @app.route("/")
 def home():
@@ -436,6 +441,10 @@ def history():
         for c in chats
     ])
 
+
+@app.route("/api/query", methods=["POST"])
+@login_required
+def query():
     try:
         data = request.json
 
@@ -444,48 +453,44 @@ def history():
 
         if not q:
             return jsonify({"answer": "Please ask a valid question."})
-    except Exception as e:
-        logger.error(f"Query parsing error: {e}", exc_info=True)
-        return jsonify({"answer": f"Error: {str(e)}"}), 500ip()
-    q = original_q
 
-    if not q:
-        return jsonify({"answer": "Please ask a valid question."})
+        q_lower = q.lower()
 
-    q_lower = q.lower()
+        # ===================== GENERAL MEMORY =====================
+        last_question = session.get("last_question")
+        last_answer = session.get("last_answer")
 
-    # ===================== GENERAL MEMORY =====================
-    last_question = session.get("last_question")
-    last_answer = session.get("last_answer")
+        follow_words = ["it", "this", "that", "those", "they", "above", "previous"]
 
-    follow_words = ["it", "this", "that", "those", "they", "above", "previous"]
+        is_followup = False
 
-    is_followup = False
+        # detect follow-up ONLY by keyword when last_question exists
+        if last_question and any(word in q_lower for word in follow_words):
+            is_followup = True
 
-    # detect follow-up ONLY by keyword when last_question exists
-    if last_question and any(word in q_lower for word in follow_words):
-        is_followup = True
+        if is_followup:
+            q = f"Previous Question: {last_question}\nPrevious Answer: {last_answer}\nCurrent Question: {original_q}"
+        else:
+            q = original_q
+            last_question = None
+            last_answer = None
 
-    if is_followup:
-        q = f"Previous Question: {last_question}\nPrevious Answer: {last_answer}\nCurrent Question: {original_q}"
-    else:
-        q = original_q
-        last_question = None
-        last_answer = None
+        if "all questions" in q_lower:
+            chats = Chat.query.filter_by(user_id=current_user.id).all()
 
-    if "all questions" in q_lower:
+            if not chats:
+                return jsonify({"answer": "No questions asked yet."})
 
-        chats = Chat.query.filter_by(user_id=current_user.id).all()
+            question_list = "\n".join(
+                f"{i+1}. {c.question}"
+                for i, c in enumerate(chats)
+            )
 
-        if not chats:
-            return jsonify({"answer": "No questions asked yet."})
+            return jsonify({"answer": question_list})
 
-        question_list = "\n".join(
-            f"{i+1}. {c.question}"
-            for i, c in enumerate(chats)
-        )
-
-        try:
+        if q_lower in ["hi", "hello", "hey"]:
+            answer = "Hello! 😊 How can I assist you today?"
+        else:
             provider = data.get("provider", "groq")
             model_name = data.get("model_name", "llama-3.1-8b-instant")
 
@@ -509,7 +514,11 @@ def history():
                 # 🔁 fallback direct LLM
                 try:
                     answer = llm_instance.invoke(original_q).content.strip()
-    try:
+                except Exception as e2:
+                    logger.error(f"LLM ERROR: {e2}", exc_info=True)
+                    answer = "Model temporarily unavailable."
+
+        # store ALWAYS the latest clean question
         session["last_question"] = original_q
         session["last_answer"] = answer
 
@@ -520,52 +529,39 @@ def history():
         ))
 
         db.session.commit()
+
+        return jsonify({"answer": answer})
+
     except Exception as e:
-        logger.error(f"Database save error: {e}", exc_info=True = llm_instance.invoke(original_q).content.strip()
-            except Exception as e2:
-                print("LLM ERROR:", e2)
-                answer = "Model temporarily unavailable."
+        logger.error(f"Query error: {e}", exc_info=True)
+        return jsonify({"answer": f"Error: {str(e)}"}), 500
 
-    # store ALWAYS the latest clean question
-    session["last_question"] = original_q
-    session["last_answer"] = answer
 
-    db.session.add(Chat(
-        user_id=current_user.id,
 @app.errorhandler(500)
 def handle_500(error):
     logger.error(f"500 Error: {error}", exc_info=True)
-    return jsonify({"error": "Internal Server Error", "details": str(error)}), 500
+    return jsonify({"error": "Internal Server Error"}), 500
+
 
 @app.errorhandler(Exception)
 def handle_general_error(error):
     logger.error(f"Unhandled error: {error}", exc_info=True)
-    return jsonify({"error": "Internal Server Error", "details": str(error)}), 500
+    return jsonify({"error": "Internal Server Error"}), 500
+
 
 if __name__ == "__main__":
 
     with app.app_context():
         try:
             db.create_all()
-
             Chat.query.delete()
             db.session.commit()
-
             print("✅ Chat history cleared on server restart.")
         except Exception as e:
-            logger.error(f"Database initialization error: {e}", exc_info=True
+            logger.error(f"Database initialization error: {e}", exc_info=True)
 
-if __name__ == "__main__":
-
-    with app.app_context():
-
-        db.create_all()
-
-        Chat.query.delete()
-        db.session.commit()
-
-        print("✅ Chat history cleared on server restart.")
-
-    print("Server running at http://127.0.0.1:8000")
-
-    app.run(port=8000, debug=True)
+    port = int(os.getenv("PORT", 8000))
+    debug_mode = os.getenv("FLASK_ENV") == "development"
+    
+    logger.info(f"Starting Flask app on port {port}, debug={debug_mode}")
+    app.run(host="0.0.0.0", port=port, debug=debug_mode)
