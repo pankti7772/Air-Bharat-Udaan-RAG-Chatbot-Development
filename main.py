@@ -56,6 +56,7 @@ app.config["SECRET_KEY"] = "super_secret_key"
 app.config["SESSION_TYPE"] = "filesystem"
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///udan_users.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["PROPAGATE_EXCEPTIONS"] = True
 
 app.config["GOOGLE_OAUTH_CLIENT_ID"] = os.getenv("GOOGLE_CLIENT_ID")
 app.config["GOOGLE_OAUTH_CLIENT_SECRET"] = os.getenv("GOOGLE_CLIENT_SECRET")
@@ -63,6 +64,8 @@ app.config["GOOGLE_OAUTH_CLIENT_SECRET"] = os.getenv("GOOGLE_CLIENT_SECRET")
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = "google.login"
+
+logger.info("✅ Flask app initialized")
 
 
 # ===================== UNAUTHORIZED =====================
@@ -564,23 +567,37 @@ if __name__ == "__main__":
 
     with app.app_context():
         try:
+            logger.info("Creating database tables...")
             db.create_all()
+            logger.info("✅ Database tables created")
+            
+            logger.info("Clearing chat history...")
             Chat.query.delete()
             db.session.commit()
-            logger.info("✅ Chat history cleared on server restart.")
+            logger.info("✅ Chat history cleared")
         except Exception as e:
             logger.error(f"Database initialization error: {e}", exc_info=True)
 
     port = int(os.getenv("PORT", 8000))
-    debug_mode = os.getenv("FLASK_ENV") == "development"
+    is_production = os.getenv("RENDER") == "true"
+    debug_mode = False if is_production else os.getenv("FLASK_ENV") == "development"
     
-    logger.info(f"Starting Flask app on port {port}, debug={debug_mode}")
-    logger.info(f"Database URI: {app.config['SQLALCHEMY_DATABASE_URI']}")
+    logger.info(f"Environment: {'PRODUCTION (Render)' if is_production else 'DEV'}")
+    logger.info(f"Starting Flask app on 0.0.0.0:{port}, debug={debug_mode}")
     logger.info(f"Template folder: {app.template_folder}")
     logger.info(f"Static folder: {app.static_folder}")
     
     try:
-        app.run(host="0.0.0.0", port=port, debug=debug_mode)
+        app.run(host="0.0.0.0", port=port, debug=debug_mode, use_reloader=False)
     except Exception as e:
         logger.error(f"Fatal error: {e}", exc_info=True)
         raise
+
+else:
+    # For gunicorn production use
+    logger.info("App loaded by gunicorn")
+    with app.app_context():
+        try:
+            db.create_all()
+        except Exception as e:
+            logger.warning(f"Could not initialize database at import time: {e}")

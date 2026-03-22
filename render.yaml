@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: udan-rag-app
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 1 --timeout 120 --access-logfile - --error-logfile - main:app
+    healthCheckPath: /health
