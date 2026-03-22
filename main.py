@@ -44,10 +44,13 @@ DATA_DIR = "attached_assets"
 FAISS_PATH = "faiss_index"
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
-
+from werkzeug.middleware.proxy_fix import ProxyFix
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 CORS(app, supports_credentials=True)
 
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "fallback_secret")
+app.config["SESSION_COOKIE_SECURE"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "None"
 app.config["SESSION_TYPE"] = "filesystem"
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///udan_users.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -364,37 +367,45 @@ def home():
 
 @app.route("/google_login")
 def google_login():
+    try:
+        if not google.authorized:
+            return redirect(url_for("google.login"))
 
-    if not google.authorized:
-        return redirect(url_for("google.login"))
+        resp = google.get("userinfo")  
 
-    resp = google.get("/oauth2/v2/userinfo")
-    info = resp.json()
+        if not resp.ok:
+            return f"Failed to fetch user info: {resp.text}"
 
-    google_id = info.get("id")
-    email = info.get("email")
-    name = info.get("name")
+        info = resp.json()
 
-    if not google_id:
-        return "Login failed", 400
+        google_id = info.get("id")
+        email = info.get("email")
+        name = info.get("name")
 
-    user = User.query.filter_by(google_id=google_id).first()
+        if not google_id:
+            return "Login failed", 400
 
-    if not user:
-        user = User(google_id=google_id, email=email, name=name)
-        db.session.add(user)
+        user = User.query.filter_by(google_id=google_id).first()
+
+        if not user:
+            user = User(google_id=google_id, email=email, name=name)
+            db.session.add(user)
+            db.session.commit()
+
+        login_user(user)
+
+        db.session.add(LoginHistory(
+            user_id=user.id,
+            ip_address=request.remote_addr
+        ))
+
         db.session.commit()
 
-    login_user(user)
+        return redirect("/")
 
-    db.session.add(LoginHistory(
-        user_id=user.id,
-        ip_address=request.remote_addr
-    ))
-
-    db.session.commit()
-
-    return redirect("/")
+    except Exception as e:
+        print("OAUTH ERROR:", str(e))
+        return f"OAuth Error: {str(e)}"
 
 
 @app.route("/logout")
