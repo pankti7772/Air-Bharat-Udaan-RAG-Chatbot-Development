@@ -567,17 +567,9 @@ def query():
 
 # ===================== INIT =====================
 
+with app.app_context():
+    db.create_all()   # ✅ THIS CREATES TABLES ON RENDER
+
 if __name__ == "__main__":
-
-    with app.app_context():
-
-        db.create_all()
-
-        Chat.query.delete()
-        db.session.commit()
-
-        print("✅ Chat history cleared on server restart.")
-
-    print("Server running at http://127.0.0.1:8000")
-
+    print("Server running...")
     app.run(port=8000, debug=True)
