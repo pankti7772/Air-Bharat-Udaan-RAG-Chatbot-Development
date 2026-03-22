@@ -44,13 +44,10 @@ DATA_DIR = "attached_assets"
 FAISS_PATH = "faiss_index"
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
-from werkzeug.middleware.proxy_fix import ProxyFix
-app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+
 CORS(app, supports_credentials=True)
 
-app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "fallback_secret")
-app.config["SESSION_COOKIE_SECURE"] = True
-app.config["SESSION_COOKIE_SAMESITE"] = "None"
+app.config["SECRET_KEY"] = "super_secret_key"
 app.config["SESSION_TYPE"] = "filesystem"
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///udan_users.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -62,8 +59,6 @@ db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = "google.login"
 
-with app.app_context():
-    db.create_all()
 
 # ===================== UNAUTHORIZED =====================
 
@@ -139,14 +134,10 @@ def get_llm(provider: str, model_name: str):
 
 # ===================== EMBEDDINGS =====================
 
-try:
-    embeddings = BedrockEmbeddings(
-        model_id=EMBED_MODEL,
-        region_name=AWS_REGION
-    )
-except Exception as e:
-    print("Embedding init failed:", e)
-    embeddings = None
+embeddings = BedrockEmbeddings(
+    model_id=EMBED_MODEL,
+    region_name=AWS_REGION
+)
 
 
 # ===================== PROMPTS =====================
@@ -248,11 +239,7 @@ def build_or_load_vectorstore():
     return store
 
 
-try:
-    vectorstore = build_or_load_vectorstore()
-except Exception as e:
-    print("Vectorstore error:", e)
-    vectorstore = None
+vectorstore = build_or_load_vectorstore()
 
 retriever = vectorstore.as_retriever(
     search_type="similarity",
@@ -377,45 +364,37 @@ def home():
 
 @app.route("/google_login")
 def google_login():
-    try:
-        if not google.authorized:
-            return redirect(url_for("google.login"))
 
-        resp = google.get("https://www.googleapis.com/oauth2/v2/userinfo")  
+    if not google.authorized:
+        return redirect(url_for("google.login"))
 
-        if not resp.ok:
-            return f"Failed to fetch user info: {resp.text}"
+    resp = google.get("/oauth2/v2/userinfo")
+    info = resp.json()
 
-        info = resp.json()
+    google_id = info.get("id")
+    email = info.get("email")
+    name = info.get("name")
 
-        google_id = info.get("id")
-        email = info.get("email")
-        name = info.get("name")
+    if not google_id:
+        return "Login failed", 400
 
-        if not google_id:
-            return "Login failed", 400
+    user = User.query.filter_by(google_id=google_id).first()
 
-        user = User.query.filter_by(google_id=google_id).first()
-
-        if not user:
-            user = User(google_id=google_id, email=email, name=name)
-            db.session.add(user)
-            db.session.commit()
-
-        login_user(user)
-
-        db.session.add(LoginHistory(
-            user_id=user.id,
-            ip_address=request.remote_addr
-        ))
-
+    if not user:
+        user = User(google_id=google_id, email=email, name=name)
+        db.session.add(user)
         db.session.commit()
 
-        return redirect("/")
+    login_user(user)
 
-    except Exception as e:
-        print("OAUTH ERROR:", str(e))
-        return f"OAuth Error: {str(e)}"
+    db.session.add(LoginHistory(
+        user_id=user.id,
+        ip_address=request.remote_addr
+    ))
+
+    db.session.commit()
+
+    return redirect("/")
 
 
 @app.route("/logout")
@@ -532,6 +511,18 @@ def query():
 
 
 # ===================== INIT =====================
+
 if __name__ == "__main__":
+
+    with app.app_context():
+
+        db.create_all()
+
+        Chat.query.delete()
+        db.session.commit()
+
+        print("✅ Chat history cleared on server restart.")
+
     print("Server running at http://127.0.0.1:8000")
+
     app.run(port=8000, debug=True)
