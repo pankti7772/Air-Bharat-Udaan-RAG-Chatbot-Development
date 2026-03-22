@@ -47,7 +47,7 @@ app = Flask(__name__, template_folder="templates", static_folder="static")
 
 CORS(app, supports_credentials=True)
 
-app.config["SECRET_KEY"] = "super_secret_key"
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "fallback_secret")
 app.config["SESSION_TYPE"] = "filesystem"
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///udan_users.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
