@@ -1,12 +1,14 @@
 # ✈️ Air Bharat Udaan — RAG Chatbot Development
 
 🚀 An AI-powered Retrieval-Augmented Generation (RAG) chatbot designed to deliver accurate, context-aware responses using custom data and modern LLM pipelines.
+
 📌 Overview
 Air Bharat Udaan is a smart conversational AI system that leverages Retrieval-Augmented Generation (RAG) to provide precise and reliable answers by combining:
 📚 External knowledge retrieval
 🧠 Large Language Models (LLMs)
 ⚡ Real-time query processing
 Unlike traditional chatbots, this system retrieves relevant information first and then generates responses — reducing hallucinations and improving accuracy.
+
 🎯 Key Features
 🔍 Context-Aware Responses using RAG architecture
 📄 Document-Based Q&A (PDFs, datasets, knowledge base)
