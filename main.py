@@ -33,9 +33,6 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document
 from langgraph.graph import StateGraph, END
 
-from ragas import evaluate, EvaluationDataset
-from ragas.metrics import LLMContextRecall, ContextPrecision, Faithfulness, FactualCorrectness
-from ragas.llms import LangchainLLMWrapper
 
 
 # ===================== CONFIG =====================
@@ -568,7 +565,7 @@ def query():
 # ===================== INIT =====================
 
 with app.app_context():
-    db.create_all()   # ✅ THIS CREATES TABLES ON RENDER
+    db.create_all()   
 
 if __name__ == "__main__":
     print("Server running...")
