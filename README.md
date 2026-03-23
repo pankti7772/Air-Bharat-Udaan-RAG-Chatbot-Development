@@ -7,6 +7,7 @@ Air Bharat Udaan is a smart conversational AI system that leverages Retrieval-Au
 📚 External knowledge retrieval
 🧠 Large Language Models (LLMs)
 ⚡ Real-time query processing
+
 Unlike traditional chatbots, this system retrieves relevant information first and then generates responses — reducing hallucinations and improving accuracy.
 
 🎯 Key Features
@@ -16,6 +17,7 @@ Unlike traditional chatbots, this system retrieves relevant information first an
 🧠 LLM Integration (OpenAI / Gemini / etc.)
 💬 Interactive Chat Interface
 🔄 Scalable & Modular Architecture
+
 🧠 How It Works
 The system follows a standard RAG pipeline:
 📥 User submits a query
@@ -25,7 +27,9 @@ The system follows a standard RAG pipeline:
 🤖 LLM generates the final answer
 👉 In simple terms:
 Retrieve → Augment → Generate
+
 This approach significantly improves factual correctness compared to standalone LLMs.
+
 🏗️ Tech Stack
 Layer	Technology
 💻 Language	Python
