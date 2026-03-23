@@ -1,41 +1,92 @@
 # ✈️ Air Bharat Udaan — RAG Chatbot Development
 
-🚀 An AI-powered Retrieval-Augmented Generation (RAG) chatbot designed to deliver accurate, context-aware responses using custom data and modern LLM pipelines.
+## 📌 Overview
 
-📌 Overview
-Air Bharat Udaan is a smart conversational AI system that leverages Retrieval-Augmented Generation (RAG) to provide precise and reliable answers by combining:
-📚 External knowledge retrieval
-🧠 Large Language Models (LLMs)
-⚡ Real-time query processing
+**Air Bharat Udaan** is an AI-powered conversational system built using **Retrieval-Augmented Generation (RAG)** to deliver accurate, context-aware responses.
+It combines **external knowledge retrieval** with **large language models (LLMs)** to minimize hallucinations and improve factual reliability.
 
-Unlike traditional chatbots, this system retrieves relevant information first and then generates responses — reducing hallucinations and improving accuracy.
+Unlike traditional chatbots, this system retrieves relevant information first and then generates responses, ensuring higher precision and trustworthiness.
 
-🎯 Key Features
-🔍 Context-Aware Responses using RAG architecture
-📄 Document-Based Q&A (PDFs, datasets, knowledge base)
-⚡ Fast Semantic Search using vector embeddings
-🧠 LLM Integration (OpenAI / Gemini / etc.)
-💬 Interactive Chat Interface
-🔄 Scalable & Modular Architecture
+---
 
-🧠 How It Works
+## 🚀 Key Features
+
+* 🔍 **Context-Aware Responses** using RAG architecture
+* 📄 **Document-Based Q&A** (PDFs, datasets, knowledge bases)
+* ⚡ **Fast Semantic Search** using vector embeddings
+* 🧠 **LLM Integration** (OpenAI / Gemini / others)
+* 💬 **Interactive Chat Interface**
+* 🧩 **Scalable & Modular Architecture**
+
+---
+
+## 🧠 How It Works
+
 The system follows a standard RAG pipeline:
-📥 User submits a query
-📊 Query is converted into embeddings
-🔎 Relevant documents are retrieved from vector DB
-🧩 Context is combined with the query
-🤖 LLM generates the final answer
-👉 In simple terms:
-Retrieve → Augment → Generate
 
-This approach significantly improves factual correctness compared to standalone LLMs.
+1. **User Query Input**
+2. **Query Embedding Generation**
+3. **Relevant Document Retrieval** from Vector Database
+4. **Context Augmentation** with retrieved data
+5. **Response Generation** using LLM
 
-🏗️ Tech Stack
+➡️ In simple terms:
+**Retrieve → Augment → Generate**
 
-Layer	Technology
-💻 Language	Python
-🧠 LLM	OpenAI / Gemini
-🔗 Framework	LangChain
-🗄️ Vector DB	Chroma / FAISS
-🌐 Frontend	Streamlit
-📦 Embeddings	Sentence Transformers
+---
+
+## 🛠️ Tech Stack
+
+| Layer      | Technology Used       |
+| ---------- | --------------------- |
+| Language   | Python                |
+| LLM        | OpenAI / Gemini       |
+| Framework  | LangChain             |
+| Vector DB  | Chroma / FAISS        |
+| Frontend   | Streamlit             |
+| Embeddings | Sentence Transformers |
+
+---
+
+## 📂 Project Structure
+
+```
+├── templates/          # UI templates
+├── static/             # Static assets
+├── attached_assets/    # Supporting files
+├── main.py             # Application entry point
+├── requirements.txt    # Dependencies
+├── render.yaml         # Deployment config
+└── README.md           # Project documentation
+```
+
+---
+
+## 📈 Advantages of RAG
+
+* ✅ Reduces hallucinations in LLM responses
+* ✅ Improves factual accuracy
+* ✅ Enables domain-specific knowledge integration
+* ✅ Scales efficiently with large datasets
+
+---
+
+## 🌟 Future Enhancements
+
+* Multi-language support 🌍
+* Voice-based interaction 🎙️
+* Real-time data integration 📡
+* Advanced personalization 🤖
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Feel free to fork the repo and submit a pull request.
+
+---
+
+## 📜 License
+
+This project is licensed under the MIT License.
+
