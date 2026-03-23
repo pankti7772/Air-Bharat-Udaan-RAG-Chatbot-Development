@@ -1,0 +1,2057 @@
+[
+  {
+    "airline": "air_india",
+    "page": 1,
+    "table_id": "airindia_page_1_table_1",
+    "headers": [
+      "Add on",
+      "Type",
+      "Xtra Pack",
+      "Xperience Pack",
+      "Xecutive Pack"
+    ],
+    "rows": [
+      [
+        "Xpress Prime\nSeats",
+        "Extra Leg Room Seats",
+        "-",
+        "50% Discount",
+        "Included"
+      ],
+      [
+        "Standard\nSeats",
+        "All Standard Seats",
+        "Included",
+        "Included",
+        "Included"
+      ],
+      [
+        "Meals",
+        "Hot",
+        "Included",
+        "Included",
+        "Included"
+      ],
+      [
+        "Meals",
+        "Sandwich",
+        "Included",
+        "Included",
+        "Included"
+      ],
+      [
+        "XtraCarry On Bag",
+        "+3 Kg extra cabin bag",
+        "-",
+        "-",
+        "Included"
+      ],
+      [
+        "Xpress Ahead",
+        "Priority Check-in",
+        "-",
+        "Included",
+        "Included"
+      ],
+      [
+        "",
+        "Priority Baggage",
+        "-",
+        "",
+        ""
+      ],
+      [
+        "",
+        "Priority Boarding",
+        "-",
+        "",
+        ""
+      ],
+      [
+        "Price-Domestic",
+        "",
+        "\u20b9700",
+        "\u20b91,000",
+        "\u20b92,000"
+      ],
+      [
+        "Price \u2013International",
+        "",
+        "\u20b9700",
+        "\u20b91,200",
+        "\u20b93,600"
+      ]
+    ]
+  },
+  {
+    "airline": "air_india",
+    "page": 1,
+    "table_id": "airindia_page_1_table_2",
+    "headers": [
+      "Add on",
+      "Type",
+      "Airport Xtra Pack",
+      "Airport\nXecutive Pack"
+    ],
+    "rows": [
+      [
+        "PrimeSeats",
+        "Extra Leg Room Seats",
+        "-",
+        "All seats included"
+      ],
+      [
+        "StandardSeats",
+        "All Standard Seats",
+        "Included",
+        ""
+      ],
+      [
+        "Meal",
+        "Ready To Eat (RTE)",
+        "Included",
+        "Included"
+      ],
+      [
+        "Xpress Ahead",
+        "Priority Check-in",
+        "-",
+        "Included"
+      ],
+      [
+        "",
+        "Priority Baggage",
+        "-",
+        ""
+      ],
+      [
+        "",
+        "Priority Boarding",
+        "-",
+        ""
+      ],
+      [
+        "Price-Domestic",
+        "",
+        "\u20b9700",
+        "\u20b92,000"
+      ],
+      [
+        "Price -International",
+        "",
+        "\u20b9700",
+        "\u20b93,600"
+      ]
+    ]
+  },
+  {
+    "airline": "air_india",
+    "page": 1,
+    "table_id": "airindia_page_1_table_3",
+    "headers": [
+      "7kg",
+      "+3 Kgs",
+      "+5 Kgs"
+    ],
+    "rows": [
+      [
+        "Free",
+        "2100",
+        "3500"
+      ]
+    ]
+  },
+  {
+    "airline": "air_india",
+    "page": 1,
+    "table_id": "airindia_page_1_table_4",
+    "headers": [
+      "Checked Baggage",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "rows": [
+      [
+        "Fare\nType",
+        "Free\nBaggage\nAllowance",
+        "+3\nKgs",
+        "+5\nKgs",
+        "+10\nKgs",
+        "+15\nKgs",
+        "+20\nKgs",
+        "+25\nkgs",
+        "+30\nKgs",
+        "+40\nKgs"
+      ],
+      [
+        "Lite",
+        "0 Kgs",
+        "N/A",
+        "N/A",
+        "1,000",
+        "1,500",
+        "4,500",
+        "N/A",
+        "10,500",
+        "16,500"
+      ],
+      [
+        "All other\nFares",
+        "15 kgs",
+        "1,800",
+        "3,000",
+        "6,000",
+        "9,000",
+        "N/A",
+        "15,000",
+        "N/A",
+        "N/A"
+      ]
+    ]
+  },
+  {
+    "airline": "air_india",
+    "page": 1,
+    "table_id": "airindia_page_1_table_5",
+    "headers": [
+      "International Connecting Baggage (ICB)",
+      null,
+      null,
+      null
+    ],
+    "rows": [
+      [
+        "Fee",
+        "+8 Kgs",
+        "+15 Kgs",
+        "+30 Kgs"
+      ],
+      [
+        "\u20b9",
+        "1,600",
+        "3,000",
+        "6,000"
+      ]
+    ]
+  },
+  {
+    "airline": "air_india",
+    "page": 1,
+    "table_id": "airindia_page_1_table_6",
+    "headers": [
+      "*",
+      "ICB",
+      "fees are subject to verification of the boarding pass of the international connecting",
+      "flight",
+      "*"
+    ],
+    "rows": []
+  },
+  {
+    "airline": "air_india",
+    "page": 1,
+    "table_id": "airindia_page_1_table_7",
+    "headers": [
+      "Special Equipment Handling Fee (Prebook)",
+      null,
+      null,
+      null
+    ],
+    "rows": [
+      [
+        "Fee",
+        "1 Piece",
+        "2 Pieces",
+        "3 Pieces"
+      ],
+      [
+        "Domestic",
+        "\u20b9 2,000",
+        "\u20b9 4,000",
+        "\u20b9 6,000"
+      ]
+    ]
+  },
+  {
+    "airline": "air_india",
+    "page": 1,
+    "table_id": "airindia_page_1_table_8",
+    "headers": [
+      "Handling Charge (Prebook)",
+      null
+    ],
+    "rows": [
+      [
+        "Fare Class",
+        "Price"
+      ],
+      [
+        "All Fares Classes",
+        "\u20b9950"
+      ]
+    ]
+  },
+  {
+    "airline": "air_india",
+    "page": 1,
+    "table_id": "airindia_page_1_table_9",
+    "headers": [
+      "Checked Baggage",
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "rows": [
+      [
+        "Fare\nType",
+        "Checked\nBaggage\n1 Piece\n15 Kgs",
+        "Checked\nBaggage\n1 Piece\n20 Kgs",
+        "Excess\nBaggage\n(Per KG)",
+        "Handling\nCharge\n(Per Additional\nPiece)",
+        "Gate\nBaggage"
+      ],
+      [
+        "Lite",
+        "2,000",
+        "5,500",
+        "700",
+        "Airport: 1,000",
+        "4,000"
+      ],
+      [
+        "All\nOther\nFares",
+        "Included",
+        "N/A",
+        "700",
+        "Airport: 1,000",
+        "4,000"
+      ]
+    ]
+  },
+  {
+    "airline": "air_india",
+    "page": 1,
+    "table_id": "airindia_page_1_table_10",
+    "headers": [
+      "Special Equipment Handling Fee",
+      null,
+      null,
+      null
+    ],
+    "rows": [
+      [
+        "Fee",
+        "1 Piece",
+        "2 Pieces",
+        "3 Pieces"
+      ],
+      [
+        "\u20b9",
+        "2500",
+        "5000",
+        "7500"
+      ]
+    ]
+  },
+  {
+    "airline": "air_india",
+    "page": 1,
+    "table_id": "airindia_page_1_table_11",
+    "headers": [
+      "Seat Type",
+      "Pre/Post Book Price",
+      "Airport Pricing"
+    ],
+    "rows": [
+      [
+        "Extra leg room seats\nupfront & Emergency\nExit seats",
+        "Up to\nINR 2500",
+        "Up to\nINR 2500"
+      ],
+      [
+        "Forward cabin,\nbefore emergency exit",
+        "Up to\nINR 900",
+        "Up to\nINR 900"
+      ],
+      [
+        "After cabin,\nAfter emergency exit",
+        "Up to\nINR 500",
+        "Up to\nINR 700"
+      ],
+      [
+        "BusinessSeats",
+        "Up to\nNR 5000",
+        "Up to\nINR 6000"
+      ]
+    ]
+  },
+  {
+    "airline": "air_india",
+    "page": 1,
+    "table_id": "airindia_page_1_table_12",
+    "headers": [
+      "Item",
+      "Value/ Business/ Lite\nFee (\u20b9)"
+    ],
+    "rows": [
+      [
+        "Flight Change Fee\n(Up to2hrs prior to Departure)",
+        "3,000"
+      ],
+      [
+        "Flight Cancellation Fee\n(Up to2hrsprior to Departure)",
+        "4300"
+      ],
+      [
+        "Infant Fee",
+        "2000"
+      ],
+      [
+        "Convenience Fee\n(Per Passenger Per Segment)",
+        "249"
+      ],
+      [
+        "Convenience Fee Airport\n(Per Passenger Per Segment)",
+        "250"
+      ],
+      [
+        "Xpress Ahead Service -Prebook/Airport",
+        "600/650"
+      ],
+      [
+        "Fly Ahead",
+        "1500"
+      ],
+      [
+        "Travel Certificate",
+        "300"
+      ],
+      [
+        "Self Offloading Fees",
+        "5000"
+      ],
+      [
+        "Unaccompanied Minor",
+        "5000"
+      ],
+      [
+        "Fare Lock",
+        "500"
+      ],
+      [
+        "Weapons",
+        "5500"
+      ]
+    ]
+  },
+  {
+    "airline": "air_india",
+    "page": 1,
+    "table_id": "airindia_page_1_table_13",
+    "headers": [
+      "Classic",
+      "Classic\n(\u20b9)"
+    ],
+    "rows": [
+      [
+        "Flight Change Fee\n(Up to3 Days Of Departure)",
+        "300"
+      ],
+      [
+        "Flight Change Fee\n(Within 3 Days to 2 Hrs Of Departure)",
+        "1,000"
+      ],
+      [
+        "Flight Cancellation Fee\n(Up to3 Days to Departure)",
+        "2,000"
+      ],
+      [
+        "Flight CancellationFee\n(Within 3 Days to 2 Hrs Of Departure)",
+        "3,000"
+      ]
+    ]
+  },
+  {
+    "airline": "air_india",
+    "page": 1,
+    "table_id": "airindia_page_1_table_14",
+    "headers": [
+      "Flex",
+      "Flex\n(\u20b9)"
+    ],
+    "rows": [
+      [
+        "Flight Change Fee (Up to 3 Days Of Departure)",
+        "0"
+      ],
+      [
+        "Flight Change Fee (Within 3 Days to 2 HrsOf Departure)",
+        "250"
+      ],
+      [
+        "Flight Cancellation Fee (Up to 2 Hrsof Departure)",
+        "1500"
+      ]
+    ]
+  },
+  {
+    "airline": "air_india",
+    "page": 2,
+    "table_id": "airindia_page_2_table_1",
+    "headers": [
+      "Air India Express\nFees & Charges - International\nExcess Baggage\nAirport",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "rows": [
+      [
+        "Lite",
+        "",
+        "INR",
+        "AED",
+        "",
+        "QAR",
+        "",
+        "SAR",
+        "",
+        "BHD",
+        "",
+        "OMR",
+        "",
+        "KWD",
+        "",
+        "SGD",
+        "",
+        "MYR",
+        "",
+        "USD",
+        "",
+        "THB",
+        "",
+        "NPR",
+        "",
+        "BDT"
+      ],
+      [
+        "0-20\nkgs",
+        "",
+        "3000",
+        "Auto conversion as per currency exchange rate.",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "After 21 kgs per kg rates applicable as per the sector you are travelling as per below grid",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "Price\nRoutes Currency\nPer Kg\nIndia -UAE INR 1500\nUAE -India AED 68\nIndia -Bahrain INR 1500\nBahrain \u2013India BHD 7\nIndia \u2013Qatar INR 1500\nQatar \u2013India QAR 68\nIndia -Singapore INR 1800\nSingapore \u2013India SGD 30\nIndia \u2013Saudi INR 1500\nSaudi -India SAR 65\nIndia \u2013Oman INR 1500\nOman \u2013India OMR 7\nIndia \u2013Thailand INR 1500\nThailand -India THB 750\nIndia -Nepal INR 600\nNepal \u2013India NPR 900\nIndia -Bangladesh INR 600\nBangladesh -India INR 1150\nIndia -Kuwait INR 1600\nKuwait -India KWD 5\nExcess Baggage\nPre-book",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "Lite",
+        "INR",
+        "",
+        "",
+        "AED",
+        "",
+        "QAR",
+        "",
+        "SAR",
+        "",
+        "BHD",
+        "",
+        "OMR",
+        "",
+        "KWD",
+        "",
+        "SGD",
+        "",
+        "MYR",
+        "",
+        "USD",
+        "",
+        "THB",
+        "",
+        "NPR",
+        "BDT"
+      ],
+      [
+        "20 kgs",
+        "2500",
+        "",
+        "",
+        "120",
+        "",
+        "120",
+        "",
+        "120",
+        "",
+        "12",
+        "",
+        "12",
+        "",
+        "10",
+        "",
+        "44",
+        "",
+        "145",
+        "",
+        "31",
+        "",
+        "1250",
+        "",
+        "4100",
+        "4200"
+      ],
+      [
+        "30 Kgs",
+        "13500\n( For\nNepal\n8000)",
+        "",
+        "",
+        "710",
+        "",
+        "710",
+        "",
+        "720",
+        "",
+        "62",
+        "",
+        "62",
+        "",
+        "40",
+        "",
+        "94",
+        "",
+        "$$",
+        "",
+        "$$",
+        "",
+        "6450",
+        "",
+        "10300",
+        "INR\n13500"
+      ],
+      [
+        "40 Kgs",
+        "24500\n( For\nNepal\n13500)",
+        "",
+        "",
+        "1300",
+        "",
+        "1300",
+        "",
+        "1320",
+        "",
+        "112",
+        "",
+        "112",
+        "",
+        "70",
+        "",
+        "144",
+        "",
+        "$$",
+        "",
+        "$$",
+        "",
+        "11650",
+        "",
+        "16500",
+        "INR\n22800"
+      ],
+      [
+        "*$$* -As per currency exchange rate\nMarket\nCurrency 5 Kg 10 Kg 15 Kg 25 kg\n( For All Other Fare Classes )\nKuwait -India KWD 15 30 45 75\nIndia -Kuwait INR 5500 11000 16500 27500\nSingapore \u2013India\nSGD 25 50 75 125\nIndia -Singapore INR 5500 11000 16500 27500\nThailand \u2013India THB 2600 5200 7800 13000\nIndia -Thailand INR 5500 11000 16500 27500\nUAE -India AED 295 590 885 1475\nIndia -UAE INR 5500 11000 16500 27500\nQatar -India QAR 295 590 885 1475\nIndia -Qatar INR 5500 11000 16500 27500\nBahrain -India BHD 25 50 75 125\nIndia -Bahrain INR 5500 11000 16500 27500\nOman -India OMR 25 50 75 125\nIndia -Oman INR 5500 11000 16500 27500\nDamam/Riyadh/Jeddah -India SAR 300 600 900 1500\nIndia \u2013Damam/Riyadh/Jeddah INR 5500 11000 16500 27500\nNepal -India NPR 3100 6200 9300 15500\nIndia -Nepal INR 2750 5500 8250 13750\nBangladesh \u2013India INR 4650 9300 13950 23250\nIndia -Bangladesh INR 2750 5500 8250 13750\n*For other currencies prices may vary depending on currency exchange and other charges*\nSeat Prices",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "Seat Type",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "Pre/Post Book Price",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "Airport Pricing",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "Extra leg room seats upfront\n& Emergency Exit seats",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "Up to\nINR 3500",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "Up to\nINR 3800",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "Forward cabin,\nbefore emergency exit",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "Up to\nINR 1100",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "Up to\nINR 1100",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "After cabin,\nAfter emergency exit",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "Up to\nINR 650",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "Up to\nINR 700",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "BusinessSeats",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "Up to\nINR 9500",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "Up to\nINR 11500",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ]
+    ]
+  },
+  {
+    "airline": "air_india",
+    "page": 2,
+    "table_id": "airindia_page_2_table_2",
+    "headers": [
+      "Routes",
+      "Currency",
+      "Price\nPer Kg"
+    ],
+    "rows": [
+      [
+        "India -UAE",
+        "INR",
+        "1500"
+      ],
+      [
+        "UAE -India",
+        "AED",
+        "68"
+      ],
+      [
+        "India -Bahrain",
+        "INR",
+        "1500"
+      ],
+      [
+        "Bahrain \u2013India",
+        "BHD",
+        "7"
+      ],
+      [
+        "India \u2013Qatar",
+        "INR",
+        "1500"
+      ],
+      [
+        "Qatar \u2013India",
+        "QAR",
+        "68"
+      ],
+      [
+        "India -Singapore",
+        "INR",
+        "1800"
+      ],
+      [
+        "Singapore \u2013India",
+        "SGD",
+        "30"
+      ],
+      [
+        "India \u2013Saudi",
+        "INR",
+        "1500"
+      ],
+      [
+        "Saudi -India",
+        "SAR",
+        "65"
+      ],
+      [
+        "India \u2013Oman",
+        "INR",
+        "1500"
+      ],
+      [
+        "Oman \u2013India",
+        "OMR",
+        "7"
+      ],
+      [
+        "India \u2013Thailand",
+        "INR",
+        "1500"
+      ],
+      [
+        "Thailand -India",
+        "THB",
+        "750"
+      ],
+      [
+        "India -Nepal",
+        "INR",
+        "600"
+      ],
+      [
+        "Nepal \u2013India",
+        "NPR",
+        "900"
+      ],
+      [
+        "India -Bangladesh",
+        "INR",
+        "600"
+      ],
+      [
+        "Bangladesh -India",
+        "INR",
+        "1150"
+      ],
+      [
+        "India -Kuwait",
+        "INR",
+        "1600"
+      ],
+      [
+        "Kuwait -India",
+        "KWD",
+        "5"
+      ]
+    ]
+  },
+  {
+    "airline": "air_india",
+    "page": 2,
+    "table_id": "airindia_page_2_table_3",
+    "headers": [
+      "Market\n( For All Other Fare Classes )",
+      "Currency",
+      "5 Kg",
+      "10 Kg",
+      "15 Kg",
+      "25 kg"
+    ],
+    "rows": [
+      [
+        "Kuwait -India",
+        "KWD",
+        "15",
+        "30",
+        "45",
+        "75"
+      ],
+      [
+        "India -Kuwait",
+        "INR",
+        "5500",
+        "11000",
+        "16500",
+        "27500"
+      ],
+      [
+        "Singapore \u2013India",
+        "SGD",
+        "25",
+        "50",
+        "75",
+        "125"
+      ],
+      [
+        "India -Singapore",
+        "INR",
+        "5500",
+        "11000",
+        "16500",
+        "27500"
+      ],
+      [
+        "Thailand \u2013India",
+        "THB",
+        "2600",
+        "5200",
+        "7800",
+        "13000"
+      ],
+      [
+        "India -Thailand",
+        "INR",
+        "5500",
+        "11000",
+        "16500",
+        "27500"
+      ],
+      [
+        "UAE -India",
+        "AED",
+        "295",
+        "590",
+        "885",
+        "1475"
+      ],
+      [
+        "India -UAE",
+        "INR",
+        "5500",
+        "11000",
+        "16500",
+        "27500"
+      ],
+      [
+        "Qatar -India",
+        "QAR",
+        "295",
+        "590",
+        "885",
+        "1475"
+      ],
+      [
+        "India -Qatar",
+        "INR",
+        "5500",
+        "11000",
+        "16500",
+        "27500"
+      ],
+      [
+        "Bahrain -India",
+        "BHD",
+        "25",
+        "50",
+        "75",
+        "125"
+      ],
+      [
+        "India -Bahrain",
+        "INR",
+        "5500",
+        "11000",
+        "16500",
+        "27500"
+      ],
+      [
+        "Oman -India",
+        "OMR",
+        "25",
+        "50",
+        "75",
+        "125"
+      ],
+      [
+        "India -Oman",
+        "INR",
+        "5500",
+        "11000",
+        "16500",
+        "27500"
+      ],
+      [
+        "Damam/Riyadh/Jeddah -India",
+        "SAR",
+        "300",
+        "600",
+        "900",
+        "1500"
+      ],
+      [
+        "India \u2013Damam/Riyadh/Jeddah",
+        "INR",
+        "5500",
+        "11000",
+        "16500",
+        "27500"
+      ],
+      [
+        "Nepal -India",
+        "NPR",
+        "3100",
+        "6200",
+        "9300",
+        "15500"
+      ],
+      [
+        "India -Nepal",
+        "INR",
+        "2750",
+        "5500",
+        "8250",
+        "13750"
+      ],
+      [
+        "Bangladesh \u2013India",
+        "INR",
+        "4650",
+        "9300",
+        "13950",
+        "23250"
+      ],
+      [
+        "India -Bangladesh",
+        "INR",
+        "2750",
+        "5500",
+        "8250",
+        "13750"
+      ]
+    ]
+  },
+  {
+    "airline": "air_india",
+    "page": 2,
+    "table_id": "airindia_page_2_table_4",
+    "headers": [
+      "Fees",
+      "INR",
+      "USD",
+      "AED",
+      "BHD",
+      "KWD",
+      "MYR",
+      "OMR",
+      "QAR",
+      "SAR",
+      "SGD",
+      "THB",
+      "NPR",
+      "BDT"
+    ],
+    "rows": [
+      [
+        "Convenience Fees\n(Per Passenger Per\nSegment)",
+        "499",
+        "15",
+        "46",
+        "5",
+        "5",
+        "45",
+        "3",
+        "55",
+        "28",
+        "11",
+        "389",
+        "272",
+        "400"
+      ],
+      [
+        "Convenience Fees\nAirport\n(Per Passenger Per\nSegment)",
+        "500",
+        "6",
+        "22",
+        "2",
+        "2",
+        "25",
+        "2",
+        "22",
+        "22",
+        "7",
+        "185",
+        "840",
+        "$$"
+      ],
+      [
+        "Special Handling\nPre book-Per Piece",
+        "3500",
+        "43",
+        "160",
+        "17",
+        "14",
+        "190",
+        "17",
+        "160",
+        "160",
+        "55",
+        "1750",
+        "6000",
+        "5900"
+      ],
+      [
+        "Special Handling\nAirport-Per Piece",
+        "4000",
+        "50",
+        "180",
+        "20",
+        "15",
+        "220",
+        "20",
+        "180",
+        "180",
+        "65",
+        "2000",
+        "7000",
+        "6700"
+      ],
+      [
+        "Extra Piece\nPre book-Per Piece",
+        "1800",
+        "24",
+        "82",
+        "10",
+        "8",
+        "110",
+        "10",
+        "82",
+        "82",
+        "30",
+        "900",
+        "3000",
+        "3000"
+      ],
+      [
+        "Extra Piece\nAirport-Per Piece",
+        "2000",
+        "25",
+        "100",
+        "10",
+        "8",
+        "115",
+        "10",
+        "100",
+        "100",
+        "33",
+        "1000",
+        "3300",
+        "3400"
+      ],
+      [
+        "Gate Bag",
+        "4000",
+        "50",
+        "200",
+        "20",
+        "15",
+        "230",
+        "20",
+        "200",
+        "200",
+        "70",
+        "2000",
+        "6500",
+        "6700"
+      ],
+      [
+        "Xpress Ahead\n(Pre-Book)",
+        "800",
+        "10",
+        "40",
+        "4",
+        "3",
+        "48",
+        "4",
+        "40",
+        "40",
+        "14",
+        "400",
+        "1350",
+        "1350"
+      ],
+      [
+        "Xpress Ahead\n(Airport)",
+        "900",
+        "11",
+        "42",
+        "5",
+        "4",
+        "52",
+        "5",
+        "42",
+        "42",
+        "15",
+        "450",
+        "1500",
+        "1500"
+      ],
+      [
+        "Xpress Ahead\nPre-Book\n(Ex-DXB)",
+        "1000",
+        "13",
+        "48",
+        "5",
+        "4",
+        "60",
+        "5",
+        "48",
+        "48",
+        "18",
+        "500",
+        "1650",
+        "1700"
+      ],
+      [
+        "Xpress Ahead\nAirport\n(Ex-DXB)",
+        "1350",
+        "17",
+        "62",
+        "6",
+        "5",
+        "77",
+        "6",
+        "62",
+        "62",
+        "62",
+        "680",
+        "2200",
+        "2300"
+      ],
+      [
+        "Fare Lock",
+        "850",
+        "10",
+        "37",
+        "4",
+        "3",
+        "41",
+        "4",
+        "37",
+        "37",
+        "13",
+        "325",
+        "1400",
+        "1250"
+      ],
+      [
+        "Unaccompanied\nMinor",
+        "10000",
+        "117",
+        "440",
+        "45",
+        "36",
+        "525",
+        "45",
+        "440",
+        "440",
+        "158",
+        "4070",
+        "16200",
+        "14300"
+      ],
+      [
+        "Infant",
+        "4000",
+        "47",
+        "180",
+        "19",
+        "16",
+        "220",
+        "19",
+        "180",
+        "180",
+        "66",
+        "1650",
+        "6500",
+        "600"
+      ],
+      [
+        "Cabin Baggage+ 3kg",
+        "3600",
+        "$$",
+        "195",
+        "18",
+        "12",
+        "$$",
+        "18",
+        "195",
+        "195",
+        "18",
+        "1800",
+        "2160",
+        "INR\n1950"
+      ],
+      [
+        "Cabin Baggage + 5kg",
+        "6000",
+        "$$",
+        "325",
+        "30",
+        "20",
+        "$$",
+        "30",
+        "325",
+        "325",
+        "30",
+        "3000",
+        "3600",
+        "INR\n3250"
+      ]
+    ]
+  },
+  {
+    "airline": "air_india",
+    "page": 2,
+    "table_id": "airindia_page_2_table_5",
+    "headers": [
+      "Market",
+      "Fare Type",
+      "Change Window",
+      "Base\nCurrency",
+      "Price"
+    ],
+    "rows": [
+      [
+        "India -UAE",
+        "Lite, Value, Business",
+        "Up to 2 Hrs of Flight\nDeparture",
+        "INR",
+        "4000"
+      ],
+      [
+        "UAE -India",
+        "Lite, Value, Business",
+        "Up to 2 Hrs of Flight\nDeparture",
+        "AED",
+        "220"
+      ],
+      [
+        "India -Bahrain",
+        "Lite, Value, Business",
+        "Up to 2 Hrs of Flight\nDeparture",
+        "INR",
+        "4000"
+      ],
+      [
+        "Bahrain -India",
+        "Lite, Value, Business",
+        "Up to 2 Hrs of Flight\nDeparture",
+        "BHD",
+        "20"
+      ],
+      [
+        "India \u2013Saudi Arabia",
+        "Lite, Value, Business",
+        "Up to 2 Hrs of Flight\nDeparture",
+        "INR",
+        "4000"
+      ],
+      [
+        "Saudi Arabia -India",
+        "Lite, Value, Business",
+        "Up to 2 Hrs of Flight\nDeparture",
+        "SAR",
+        "200"
+      ],
+      [
+        "India -Doha",
+        "Lite, Value, Business",
+        "Up to 2 Hrs of Flight\nDeparture",
+        "INR",
+        "4000"
+      ],
+      [
+        "Doha -India",
+        "Lite, Value, Business",
+        "Up to 2 Hrs of Flight\nDeparture",
+        "QAR",
+        "200"
+      ],
+      [
+        "India -Oman",
+        "Lite, Value, Business",
+        "Up to 2 Hrs of Flight\nDeparture",
+        "INR",
+        "4000"
+      ],
+      [
+        "Oman -India",
+        "Lite, Value, Business",
+        "Up to 2 Hrs of Flight\nDeparture",
+        "OMR",
+        "20"
+      ],
+      [
+        "India -Kuwait",
+        "Lite, Value, Business",
+        "Up to 2 Hrs of Flight\nDeparture",
+        "INR",
+        "4750"
+      ],
+      [
+        "Kuwait \u2013India",
+        "Lite, Value, Business",
+        "Up to 2 Hrs of Flight\nDeparture",
+        "KWD",
+        "18"
+      ],
+      [
+        "India -Singapore",
+        "Lite, Value, Business",
+        "Up to 2 Hrs of Flight\nDeparture",
+        "INR",
+        "4000"
+      ],
+      [
+        "Singapore \u2013India",
+        "Lite, Value, Business",
+        "Up to 2 Hrs of Flight\nDeparture",
+        "SGD",
+        "80"
+      ],
+      [
+        "India -Dhaka",
+        "Lite, Value, Business",
+        "Up to 2 Hrs of Flight\nDeparture",
+        "INR",
+        "4000"
+      ],
+      [
+        "Dhaka -India",
+        "Lite, Value, Business",
+        "Up to 2 Hrs of Flight\nDeparture",
+        "INR",
+        "4000"
+      ],
+      [
+        "India \u2013Thailand",
+        "Lite, Value, Business",
+        "Up to 2 Hrs of Flight\nDeparture",
+        "INR",
+        "4000"
+      ],
+      [
+        "Thailand \u2013India",
+        "Lite, Value, Business",
+        "Up to 2 Hrs of Flight\nDeparture",
+        "THB",
+        "2000"
+      ],
+      [
+        "India -Kathmandu",
+        "Lite, Value, Business",
+        "Up to 2 Hrs of Flight\nDeparture",
+        "INR",
+        "4000"
+      ],
+      [
+        "Kathmandu -India",
+        "Lite, Value, Business",
+        "Up to 2 Hrs of Flight\nDeparture",
+        "NPR",
+        "6500"
+      ]
+    ]
+  },
+  {
+    "airline": "air_india",
+    "page": 3,
+    "table_id": "airindia_page_3_table_1",
+    "headers": [
+      "Fees",
+      "INR",
+      "USD",
+      "AED",
+      "BHD",
+      "KWD",
+      "MYR",
+      "OMR",
+      "QAR",
+      "SAR",
+      "SGD",
+      "THB",
+      "NPR",
+      "BDT"
+    ],
+    "rows": [
+      [
+        "Classic Change\nFees Up to 3 days",
+        "500",
+        "7",
+        "25",
+        "3",
+        "2",
+        "30",
+        "3",
+        "25",
+        "25",
+        "9",
+        "250",
+        "850",
+        "850"
+      ],
+      [
+        "Classic Change\nFeeswithin 3 daysto\n2 Hrsof flight\ndeparture",
+        "2000",
+        "25",
+        "90",
+        "10",
+        "8",
+        "115",
+        "10",
+        "90",
+        "90",
+        "33",
+        "1000",
+        "3300",
+        "3400"
+      ],
+      [
+        "Flex Change Fees Up\nto 3 Days",
+        "Free",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      [
+        "Flex Change\nFeeswithin 3 days to 2\nHrsof flight departure",
+        "650",
+        "9",
+        "32",
+        "4",
+        "3",
+        "40",
+        "4",
+        "32",
+        "32",
+        "12",
+        "325",
+        "1100",
+        "1100"
+      ]
+    ]
+  },
+  {
+    "airline": "air_india",
+    "page": 3,
+    "table_id": "airindia_page_3_table_2",
+    "headers": [
+      "Markets",
+      "Fare Type",
+      "Cancel Window",
+      "Base\nCurrency",
+      "Price"
+    ],
+    "rows": [
+      [
+        "India \u2013UAE",
+        "Lite\nValue\nBusiness",
+        "Up to 24 Hrs of\nFlight Departure",
+        "INR",
+        "8000"
+      ],
+      [
+        "UAE -INDIA",
+        "Lite\nValue\nBusiness",
+        "Up to 24 Hrs of\nFlight Departure",
+        "AED",
+        "350"
+      ],
+      [
+        "India -Bahrain",
+        "Lite\nValue\nBusiness",
+        "Up to 24 Hrs of\nFlight Departure",
+        "INR",
+        "8000"
+      ],
+      [
+        "Bahrain -India",
+        "Lite\nValue\nBusiness",
+        "Up to 24 Hrs of\nFlight Departure",
+        "BHD",
+        "36"
+      ],
+      [
+        "India \u2013Saudi\nArabia",
+        "Lite\nValue\nBusiness",
+        "Up to 24 Hrs of\nFlight Departure",
+        "INR",
+        "8000"
+      ],
+      [
+        "Saudi Arabia -\nIndia",
+        "Lite\nValue\nBusiness",
+        "Up to 24 Hrs of\nFlight Departure",
+        "SAR",
+        "350"
+      ],
+      [
+        "India -Doha",
+        "Lite\nValue\nBusiness",
+        "Up to 24 Hrs of\nFlight Departure",
+        "INR",
+        "8000"
+      ],
+      [
+        "Doha -India",
+        "Lite\nValue\nBusiness",
+        "Up to 24 Hrs of\nFlight Departure",
+        "QAR",
+        "350"
+      ],
+      [
+        "India -Oman",
+        "Lite\nValue\nBusiness",
+        "Up to 24 Hrs of\nFlight Departure",
+        "INR",
+        "8000"
+      ],
+      [
+        "Oman -India",
+        "Lite\nValue\nBusiness",
+        "Up to 24 Hrs of\nFlight Departure",
+        "OMR",
+        "36"
+      ],
+      [
+        "India -Kuwait",
+        "Lite\nValue\nBusiness",
+        "Up to 24 Hrs of\nFlight Departure",
+        "INR",
+        "8000"
+      ],
+      [
+        "Kuwait-India",
+        "Lite\nValue\nBusiness",
+        "Up to 24 Hrs of\nFlight Departure",
+        "KWD",
+        "28"
+      ],
+      [
+        "India -Singapore",
+        "Lite\nValue\nBusiness",
+        "Up to 24 Hrs of\nFlight Departure",
+        "INR",
+        "8000"
+      ],
+      [
+        "Singapore -India",
+        "Lite\nValue\nBusiness",
+        "Up to 24 Hrs of\nFlight Departure",
+        "SGD",
+        "120"
+      ],
+      [
+        "India \u2013Dhaka",
+        "Lite\nValue\nBusiness",
+        "Up to 24 Hrs of\nFlight Departure",
+        "INR",
+        "4300"
+      ],
+      [
+        "Dhaka-India",
+        "Lite\nValue\nBusiness",
+        "Up to 24 Hrs of\nFlight Departure",
+        "INR",
+        "4300"
+      ],
+      [
+        "India \u2013Thailand",
+        "Lite\nValue\nBusiness",
+        "Up to 24 Hrs of\nFlight Departure",
+        "INR",
+        "8000"
+      ],
+      [
+        "Thailand -India",
+        "Lite\nValue\nBusiness",
+        "Up to 24 Hrs of\nFlight Departure",
+        "THB",
+        "3000"
+      ],
+      [
+        "India -\nKathmandu",
+        "Lite\nValue\nBusiness",
+        "Up to 24 Hrs of\nFlight Departure",
+        "INR",
+        "4300"
+      ],
+      [
+        "Kathmandu -\nIndia",
+        "Lite\nValue\nBusiness",
+        "Up to 24 Hrs of\nFlight Departure",
+        "NPR",
+        "7200"
+      ],
+      [
+        "All Markets",
+        "Lite\nValue\nBusiness",
+        "With in 24 Hrs to\n2 Hrs of Flight\nDeparture",
+        "100% Base Fare + Fuel\nSurcharge",
+        ""
+      ]
+    ]
+  },
+  {
+    "airline": "air_india",
+    "page": 3,
+    "table_id": "airindia_page_3_table_3",
+    "headers": [
+      "Fees",
+      "INR",
+      "USD",
+      "AED",
+      "BHD",
+      "KWD",
+      "MYR",
+      "OMR",
+      "QAR",
+      "SAR",
+      "SGD",
+      "THB",
+      "NPR",
+      "BDT"
+    ],
+    "rows": [
+      [
+        "Classic Cancellation\nFees Up to 3 days",
+        "4000\n( For\nNepal\n2000)",
+        "47",
+        "220",
+        "20",
+        "18",
+        "220",
+        "20",
+        "200",
+        "200",
+        "80",
+        "2000",
+        "3300",
+        "6000"
+      ],
+      [
+        "Classic Cancellation\nFeeswithin 3 days\nto 2 Hrsof flight\ndeparture",
+        "6000\n( For\nNepal\n3500)",
+        "75",
+        "290",
+        "30",
+        "24",
+        "360",
+        "30",
+        "290",
+        "290",
+        "100",
+        "3000",
+        "5700",
+        "10100"
+      ],
+      [
+        "Flex Cancellation\nFees Up to 2hrs of\nflight departure",
+        "3000\n( For\nNepal\n1500 )",
+        "36",
+        "145",
+        "15",
+        "12",
+        "180",
+        "15",
+        "145",
+        "145",
+        "48",
+        "1500",
+        "2250",
+        "5000"
+      ]
+    ]
+  },
+  {
+    "airline": "air_india",
+    "page": 3,
+    "table_id": "airindia_page_3_table_4",
+    "headers": [
+      "Extra Weight/Piece carried by passenger",
+      "Code Share Destinations",
+      "USD",
+      ""
+    ],
+    "rows": [
+      [
+        "Additional Piece Up to 23 Kg",
+        "Northern, Southern, Central America",
+        "240",
+        ""
+      ],
+      [
+        "Over weight Piece ( 23 kg to 32 Kg per piece )",
+        "Northern, Southern, Central America",
+        "130",
+        ""
+      ],
+      [
+        "Additional Piece 0 kg to 23 Kg",
+        "UK, Europe, Israel, Africa",
+        "180",
+        ""
+      ],
+      [
+        "Over weight Piece ( 23 kg to 32 Kg per piece )",
+        "UK, Europe, Israel, Africa",
+        "100",
+        ""
+      ],
+      [
+        "Additional Piece 0 kg to 23 Kg",
+        "Japan, Korea",
+        "160",
+        ""
+      ],
+      [
+        "Over weight Piece ( 23 kg to 32 Kg per piece )",
+        "Japan, Korea",
+        "90",
+        ""
+      ],
+      [
+        "Up to 3 kg Excess Baggage",
+        "Middle East , Southeast Asia , SAARC , AUNZ",
+        "54",
+        ""
+      ],
+      [
+        "Up to 5 kg Excess Baggage",
+        "Middle East , Southeast Asia , SAARC , AUNZ",
+        "90",
+        ""
+      ],
+      [
+        "Up to 10 kg Excess Baggage",
+        "Middle East , Southeast Asia , SAARC , AUNZ",
+        "180",
+        ""
+      ],
+      [
+        "Up to 15 kg Excess Baggage",
+        "Middle East , Southeast Asia , SAARC , AUNZ",
+        "270",
+        ""
+      ],
+      [
+        "Up to 20 kg Excess Baggage",
+        "Middle East , Southeast Asia , SAARC , AUNZ",
+        "360",
+        ""
+      ],
+      [
+        "Up to 25 kg Excess Baggage",
+        "Middle East , Southeast Asia , SAARC , AUNZ",
+        "450",
+        ""
+      ]
+    ]
+  }
+]
