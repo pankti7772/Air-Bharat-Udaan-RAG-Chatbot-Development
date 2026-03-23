@@ -12,9 +12,9 @@ Unlike traditional chatbots, this system retrieves relevant information first an
 ## 🚀 Key Features
 
 * 🔍 **Context-Aware Responses** using RAG architecture
-* 📄 **Document-Based Q&A** (PDFs, datasets, knowledge bases)
+* 📄 **Document-Based Q&A** (PDFs, .txt, docx)
 * ⚡ **Fast Semantic Search** using vector embeddings
-* 🧠 **LLM Integration** (OpenAI / Gemini / others)
+* 🧠 **LLM Integration** (AWS / Groq / others)
 * 💬 **Interactive Chat Interface**
 * 🧩 **Scalable & Modular Architecture**
 
@@ -44,7 +44,7 @@ The system follows a standard RAG pipeline:
 | Framework  | LangChain             |
 | Vector DB  | Chroma / FAISS        |
 | Frontend   | Streamlit             |
-| Embeddings | Sentence Transformers |
+| Embeddings | Titan-Text Embending  |
 
 ---
 
