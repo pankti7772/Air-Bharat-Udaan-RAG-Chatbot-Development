@@ -43,6 +43,7 @@ The system follows a standard RAG pipeline:
 | LLM        | AWS & Groq            |
 | Framework  | LangChain             |
 | Vector DB  | FAISS                 |
+| Database   | SQLLite               |
 | Frontend   | HTML, CSS, JS         |
 | Embeddings | Titan-Text Embending  |
 
