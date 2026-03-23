@@ -14,7 +14,7 @@ Unlike traditional chatbots, this system retrieves relevant information first an
 * 🔍 **Context-Aware Responses** using RAG architecture
 * 📄 **Document-Based Q&A** (PDFs, .txt, docx)
 * ⚡ **Fast Semantic Search** using vector embeddings
-* 🧠 **LLM Integration** (AWS / Groq / others)
+* 🧠 **LLM Integration** (AWS & Groq)
 * 💬 **Interactive Chat Interface**
 * 🧩 **Scalable & Modular Architecture**
 
