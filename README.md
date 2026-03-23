@@ -40,10 +40,10 @@ The system follows a standard RAG pipeline:
 | Layer      | Technology Used       |
 | ---------- | --------------------- |
 | Language   | Python                |
-| LLM        | OpenAI / Gemini       |
+| LLM        | AWS & Groq            |
 | Framework  | LangChain             |
-| Vector DB  | Chroma / FAISS        |
-| Frontend   | Streamlit             |
+| Vector DB  | FAISS                 |
+| Frontend   | HTML, CSS, JS         |
 | Embeddings | Titan-Text Embending  |
 
 ---
