@@ -31,6 +31,7 @@ Retrieve → Augment → Generate
 This approach significantly improves factual correctness compared to standalone LLMs.
 
 🏗️ Tech Stack
+
 Layer	Technology
 💻 Language	Python
 🧠 LLM	OpenAI / Gemini
