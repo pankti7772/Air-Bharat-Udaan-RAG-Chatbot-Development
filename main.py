@@ -33,7 +33,10 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document
 from langgraph.graph import StateGraph, END
 
-
+from ragas import evaluate, EvaluationDataset
+from ragas.metrics import Faithfulness
+from ragas.metrics.collections import AnswerRelevancy
+from ragas.llms import LangchainLLMWrapper
 
 # ===================== CONFIG =====================
 
@@ -150,15 +153,14 @@ def evaluate_response(question, context, answer, llm):
         results = evaluate(
             dataset=eval_dataset,
             metrics=[
-                LLMContextRecall(),
-                ContextPrecision(),
                 Faithfulness(),
-                FactualCorrectness()
+                AnswerRelevancy(llm=evaluator_llm, embeddings=embeddings)
+
             ],
             llm=evaluator_llm
         )
 
-        return results
+        return results.to_pandas().to_dict(orient="records")[0]
 
     except Exception as e:
         print("Evaluation error:", e)
@@ -398,6 +400,13 @@ def home():
     return render_template("index.html", logged_in=current_user.is_authenticated, user_name=user_name)
 
 
+@app.route("/api/clear", methods=["POST"])
+@login_required
+def clear_chat():
+    Chat.query.filter_by(user_id=current_user.id).delete()
+    db.session.commit()
+    return jsonify({"message": "Chat cleared"})
+
 @app.route("/google_login")
 def google_login():
 
@@ -475,6 +484,7 @@ def history():
 @app.route("/api/query", methods=["POST"])
 @login_required
 def query():
+    eval_scores = None
 
     data = request.json
 
@@ -536,6 +546,13 @@ def query():
                 "llm": llm_instance
             })
             answer = result["answer"]
+            context = result.get("context", "")
+            eval_scores = evaluate_response(
+                original_q,
+                context,
+                answer,
+                llm_instance
+            ) 
 
         except Exception as e:
             print("RAG ERROR:", e)
@@ -559,7 +576,10 @@ def query():
 
     db.session.commit()
 
-    return jsonify({"answer": answer})
+    return jsonify({
+        "answer": answer,
+        "evaluation": eval_scores or {}
+    })
 
 
 # ===================== INIT =====================

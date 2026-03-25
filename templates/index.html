@@ -612,12 +612,31 @@
         }
 
         // ================= CLEAR CHAT =================
-        clearChatBtn.onclick = () => {
-            container.innerHTML = `
+        clearChatBtn.onclick = async () => {
+            try {
+                await fetch("/api/clear", {
+                    method: "POST",
+                    credentials: "include"
+                });
+
+        // Clear chat U
+                container.innerHTML = `
                 <div class="chat-bubble bot">
                     <i class="fas fa-robot mr-2"></i>Chat cleared! How can I help you?
                 </div>
-            `;
+        `       ;
+
+        // Clear sidebar
+                historyContainer.innerHTML = `
+                <div class="text-center text-gray-500 py-8">
+                    <i class="fas fa-comments text-4xl mb-3 opacity-50"></i>
+                    <p class="text-sm">No history yet</p>
+                </div>
+        `       ;
+
+            } catch (err) {
+                console.error("Clear chat failed:", err);
+            }
         };
 
         // ================= SIDEBAR TOGGLE =================
