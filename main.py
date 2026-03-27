@@ -35,7 +35,6 @@ from langgraph.graph import StateGraph, END
 
 from ragas import evaluate, EvaluationDataset
 from ragas.metrics import Faithfulness
-from ragas.metrics.collections import AnswerRelevancy
 from ragas.llms import LangchainLLMWrapper
 
 # ===================== CONFIG =====================
@@ -122,7 +121,7 @@ def get_llm(provider: str, model_name: str):
             model=model_name,
             groq_api_key=GROQ_API_KEY,
             temperature=0.2,
-            max_tokens=800
+            max_tokens=2000
         )
 
     elif provider == "bedrock":
@@ -138,33 +137,59 @@ def get_llm(provider: str, model_name: str):
 
 def evaluate_response(question, context, answer, llm):
     try:
-        dataset = [
-            {
-                "user_input": question,
-                "retrieved_contexts": [context],
-                "response": answer,
-                "reference": context  # approximation
-            }
-        ]
+        docs = retriever.vectorstore.similarity_search(question, k=1)
+        reference_answer = docs[0].page_content if docs else ""
+
+        dataset = [{
+            "user_input": question,
+            "retrieved_contexts": [context],
+            "response": answer,
+            "reference": reference_answer
+        }]
 
         eval_dataset = EvaluationDataset.from_list(dataset)
+
         evaluator_llm = LangchainLLMWrapper(llm)
 
         results = evaluate(
             dataset=eval_dataset,
-            metrics=[
-                Faithfulness(),
-                AnswerRelevancy(llm=evaluator_llm, embeddings=embeddings)
-
-            ],
+            metrics=[Faithfulness()],
             llm=evaluator_llm
         )
 
         return results.to_pandas().to_dict(orient="records")[0]
 
     except Exception as e:
-        print("Evaluation error:", e)
-        return None
+        return {"error": str(e)}
+
+
+def compute_retrieval_metrics(retrieved_docs, relevant_docs, k=5):
+    retrieved_top_k = retrieved_docs[:k]
+
+    # Hit Rate
+    hit = int(any(doc in relevant_docs for doc in retrieved_top_k))
+    hr = hit
+
+    # Precision@K
+    relevant_in_k = sum(1 for doc in retrieved_top_k if doc in relevant_docs)
+    precision_k = relevant_in_k / k
+
+    # Recall@K
+    recall_k = relevant_in_k / len(relevant_docs) if relevant_docs else 0
+
+    # MRR
+    rr = 0
+    for idx, doc in enumerate(retrieved_top_k):
+        if doc in relevant_docs:
+            rr = 1 / (idx + 1)
+            break
+
+    return {
+        "MRR": rr,
+        "HitRate@K": hr,
+        "Precision@K": precision_k,
+        "Recall@K": recall_k
+    }
 
 
 # ===================== EMBEDDINGS =====================
@@ -191,6 +216,10 @@ Instructions:
 - If partial information exists, answer with available details.
 - Do NOT say "Not found" if some relevant info exists.
 - Only say "Not found in documents" if absolutely no info exists.
+                                           STRICT RULES:
+- Follow date conditions strictly (before/after year)
+- Do NOT include incorrect years
+- Do NOT explain excluded data
 
 Answer:
 """)
