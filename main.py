@@ -4,12 +4,13 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import os
+from apscheduler.schedulers.background import BackgroundScheduler
 
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 os.environ["OAUTHLIB_RELAX_TOKEN_SCOPE"] = "1"
 
 import re
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from typing import TypedDict
 from flask import Flask, request, jsonify, render_template, redirect, url_for, session
 from flask_cors import CORS
@@ -500,11 +501,12 @@ def history():
 
     chats = Chat.query.filter_by(user_id=current_user.id).all()
 
+    ist = datetime.now(timezone(timedelta(hours=5, minutes=30)))
     return jsonify([
         {
             "question": c.question,
             "answer": c.answer,
-            "time": c.created_at.strftime("%Y-%m-%d %H:%M:%S")
+            "time": ist.strftime("%Y-%m-%d %H:%M:%S")
         }
         for c in chats
     ])
@@ -565,7 +567,7 @@ def query():
     else:
 
         provider = data.get("provider", "groq")
-        model_name = data.get("model_name", "llama-3.1-8b-instant")
+        model_name = data.get("model_name", "llama-3.3-70b-versatile")
 
         llm_instance = get_llm(provider, model_name)
 
@@ -611,11 +613,20 @@ def query():
     })
 
 
-# ===================== INIT =====================
+@app.route("/health")
+def health():
+    return jsonify({"status": "alive", "timestamp": datetime.utcnow().isoformat()})
+
+def keep_alive():
+    with app.test_client() as client:
+        client.get("/health")
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=keep_alive, trigger="interval", minutes=5, id="keep_alive_job")
 
 with app.app_context():
-    db.create_all()   
+    db.create_all()
 
 if __name__ == "__main__":
-    print("Server running...")
+    scheduler.start()
     app.run(port=8000, debug=True)
