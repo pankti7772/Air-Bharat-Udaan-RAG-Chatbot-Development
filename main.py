@@ -120,14 +120,15 @@ def get_llm(provider: str, model_name: str):
         return ChatGroq(
             model=model_name,
             groq_api_key=GROQ_API_KEY,
-            temperature=0.2
+            temperature=0.2,
+            max_tokens=2000
         )
 
     elif provider == "bedrock":
         return ChatBedrock(
             model_id=model_name,
             region_name=AWS_REGION,
-            model_kwargs={"temperature": 0.2}
+            model_kwargs={"temperature": 0.2, "max_tokens": 800}
         )
 
     else:
