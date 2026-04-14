@@ -570,6 +570,7 @@ def query():
         model_name = data.get("model_name", "llama-3.3-70b-versatile")
 
         llm_instance = get_llm(provider, model_name)
+        eval_scores = None
 
         try:
             result = rag_graph.invoke({
@@ -578,12 +579,17 @@ def query():
             })
             answer = result["answer"]
             context = result.get("context", "")
-            eval_scores = evaluate_response(
-                original_q,
-                context,
-                answer,
-                llm_instance
-            ) 
+            
+            try:
+                eval_scores = evaluate_response(
+                    original_q,
+                    context,
+                    answer,
+                    llm_instance
+                )
+            except Exception as eval_error:
+                print("EVAL ERROR:", eval_error)
+                eval_scores = {}
 
         except Exception as e:
             print("RAG ERROR:", e)
