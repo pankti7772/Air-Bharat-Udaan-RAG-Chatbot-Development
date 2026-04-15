@@ -129,7 +129,7 @@ def get_llm(provider: str, model_name: str):
         return ChatBedrock(
             model_id=model_name,
             region_name=AWS_REGION,
-            model_kwargs={"temperature": 0.2, "max_tokens": 800}
+            model_kwargs={"temperature": 0.2, "max_tokens": 2000}
         )
 
     else:
@@ -326,31 +326,21 @@ def retrieve_node(state: RAGState):
     if not retriever:
         return {"context": ""}
 
-    question = state["question"].lower()
-
-    if any(x in question for x in ["all", "list", "show", "give"]):
-
-        if "air india" in question:
-            docs = retriever.vectorstore.similarity_search(
-                "Air India flight delay", k=40
-            )
-
-        elif "indigo" in question:
-            docs = retriever.vectorstore.similarity_search(
-                "IndiGo flight delay", k=40
-            )
-
-        else:
-            docs = retriever.vectorstore.similarity_search(
-                question, k=40
-            )
-
+    # ===================== FIX 3: Extract only the actual current question for FAISS =====================
+    # When a follow-up is detected, state["question"] contains the full blob:
+    # "Previous Question: X\nPrevious Answer: Y\nCurrent Question: Z"
+    # We must use only Z for similarity search, otherwise FAISS gets a polluted query.
+    raw_q = state["question"]
+    if "Current Question:" in raw_q:
+        search_q = raw_q.split("Current Question:")[-1].strip()
     else:
-        docs = retriever.vectorstore.similarity_search(
-            question, k=40
-        )
+        search_q = raw_q
 
-    # ================= FILTER LOGIC (NEW) =================
+    question = search_q.lower()
+    docs = retriever.vectorstore.similarity_search(question, k=40)
+
+    # ================= CONSISTENT RETRIEVAL (SAME FOR ALL MODELS) =================
+    # ================= SMART FILTER LOGIC (WITH FALLBACK) =================
 
     filtered = []
 
@@ -358,23 +348,28 @@ def retrieve_node(state: RAGState):
         text = d.page_content.lower()
 
         if "domestic" in question:
-            # domestic flights → AI-xxx format
             if "ai-" in text:
                 filtered.append(d.page_content)
 
         elif "international" in question:
-            # international routes → no AI-xxx, city-to-city format
             if " to " in text and "ai-" not in text:
                 filtered.append(d.page_content)
 
         else:
             filtered.append(d.page_content)
 
-    # fallback if nothing matched
-    if not filtered:
-        filtered = [d.page_content for d in docs]
+    # ===================== FIX 4: Better fallback — always include filtered + fill from raw docs =====================
+    # Old logic: if len(filtered) < 3: replace entirely with raw docs
+    # New logic: keep what we have, top up with remaining raw docs so we never lose good filtered chunks
+    if len(filtered) < 5:
+        extras = [d.page_content for d in docs if d.page_content not in filtered]
+        filtered = filtered + extras
 
-    context = "\n".join(filtered[:12])   # limit to 12 chunks
+    context = "\n".join(filtered[:15])   # limit to 15 chunks
+
+    print(f"[RETRIEVE] Search query used: {search_q}")
+    print(f"[RETRIEVE] Retrieved chunks: {len(filtered)}")
+    print(f"[RETRIEVE] Context length: {len(context)}")
 
     return {"context": context}
 
@@ -382,6 +377,7 @@ def retrieve_node(state: RAGState):
 def fact_node(state: RAGState):
 
     if not state["context"].strip():
+        print("[FACT] ⚠ Empty context detected - using LLM fallback")
         try:
             response = state["llm"].invoke(state["question"]).content.strip()
             return {"answer": response, "context": state["context"]}
@@ -393,8 +389,12 @@ def fact_node(state: RAGState):
 
     if any(word in q_lower for word in ["compare", "difference", "vs", "between"]):
         prompt = COMPARE_PROMPT
+        print("[FACT] Using COMPARE prompt")
     else:
         prompt = FACT_PROMPT
+        print("[FACT] Using FACT prompt")
+
+    print(f"[FACT] Context available: {len(state['context'])} chars")
 
     response = state["llm"].invoke(
         prompt.format(
@@ -402,6 +402,8 @@ def fact_node(state: RAGState):
             question=state["question"]
         )
     ).content.strip()
+
+    print(f"[FACT] Response generated: {len(response)} chars")
 
     return {
         "answer": response,
@@ -435,7 +437,12 @@ def home():
 def clear_chat():
     Chat.query.filter_by(user_id=current_user.id).delete()
     db.session.commit()
+    # Also clear session memory when chat is cleared
+    session.pop("last_question", None)
+    session.pop("last_answer", None)
+    session.pop("last_model", None)
     return jsonify({"message": "Chat cleared"})
+
 
 @app.route("/google_login")
 def google_login():
@@ -446,7 +453,6 @@ def google_login():
     try:
         resp = google.get("/oauth2/v3/userinfo")
 
-        # DEBUG
         print("STATUS:", resp.status_code)
         print("DATA:", resp.text)
 
@@ -455,7 +461,7 @@ def google_login():
 
         info = resp.json()
 
-        google_id = info.get("sub")   # IMPORTANT
+        google_id = info.get("sub")
         email = info.get("email")
         name = info.get("name")
 
@@ -492,6 +498,7 @@ def google_login():
 @login_required
 def logout():
     logout_user()
+    
     return redirect("/")
 
 
@@ -527,6 +534,20 @@ def query():
 
     q_lower = q.lower()
 
+    # ===================== FIX 2: Detect model/provider switch → reset session memory =====================
+    # When a user switches from Groq to Bedrock (or vice versa), the previous answer stored
+    # in session belongs to a different model. We clear it so the same question doesn't get
+    # misidentified as a follow-up carrying stale context from the other model.
+    prev_model = session.get("last_model")
+    curr_model = f"{data.get('provider', 'groq')}:{data.get('model_name', 'llama-3.3-70b-versatile')}"
+
+    if prev_model and prev_model != curr_model:
+        print(f"[SESSION] Model switched from '{prev_model}' to '{curr_model}' — clearing memory")
+        session.pop("last_question", None)
+        session.pop("last_answer", None)
+
+    session["last_model"] = curr_model
+
     # ===================== GENERAL MEMORY =====================
     last_question = session.get("last_question")
     last_answer = session.get("last_answer")
@@ -535,16 +556,22 @@ def query():
 
     is_followup = False
 
-    # detect follow-up ONLY by keyword when last_question exists
-    if last_question and any(word in q_lower for word in follow_words):
+    # ===================== FIX 1: Don't treat the same question as a follow-up =====================
+    # Old: if last_question and any(word in q_lower for word in follow_words)
+    # New: also require that the current question is meaningfully different from the last one
+    if (last_question
+            and last_question.lower().strip() != q_lower.strip()
+            and any(word in q_lower for word in follow_words)):
         is_followup = True
 
     if is_followup:
         q = f"Previous Question: {last_question}\nPrevious Answer: {last_answer}\nCurrent Question: {original_q}"
+        print(f"[SESSION] Follow-up detected. Expanded question sent to RAG.")
     else:
         q = original_q
         last_question = None
         last_answer = None
+        print(f"[SESSION] Standalone question. No follow-up expansion.")
 
     if "all questions" in q_lower:
 
@@ -569,6 +596,13 @@ def query():
         provider = data.get("provider", "groq")
         model_name = data.get("model_name", "llama-3.3-70b-versatile")
 
+        print(f"\n{'='*60}")
+        print(f"[QUERY] Provider: {provider}")
+        print(f"[QUERY] Model: {model_name}")
+        print(f"[QUERY] Original question: {original_q}")
+        print(f"[QUERY] Is follow-up: {is_followup}")
+        print(f"{'='*60}")
+
         llm_instance = get_llm(provider, model_name)
         eval_scores = None
 
@@ -579,7 +613,10 @@ def query():
             })
             answer = result["answer"]
             context = result.get("context", "")
-            
+
+            print(f"[QUERY] Retrieved context length: {len(context)}")
+            print(f"[QUERY] Answer (first 200 chars): {answer[:200] if answer else 'EMPTY'}")
+
             try:
                 eval_scores = evaluate_response(
                     original_q,
@@ -594,14 +631,14 @@ def query():
         except Exception as e:
             print("RAG ERROR:", e)
 
-            # 🔁 fallback direct LLM
+            # fallback direct LLM
             try:
                 answer = llm_instance.invoke(original_q).content.strip()
             except Exception as e2:
                 print("LLM ERROR:", e2)
                 answer = "Model temporarily unavailable."
 
-    # store ALWAYS the latest clean question
+    # Store always the latest clean question
     session["last_question"] = original_q
     session["last_answer"] = answer
 
@@ -623,9 +660,11 @@ def query():
 def health():
     return jsonify({"status": "alive", "timestamp": datetime.utcnow().isoformat()})
 
+
 def keep_alive():
     with app.test_client() as client:
         client.get("/health")
+
 
 scheduler = BackgroundScheduler()
 scheduler.add_job(func=keep_alive, trigger="interval", minutes=5, id="keep_alive_job")
